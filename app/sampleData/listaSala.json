@@ -41,6 +41,13 @@
       "descricao": "Reuniao com cliente para aprovacao do layout pedido",
       "horaInicio": "00:00",
       "horaFim": "00:01"
+    },
+    {
+      "imagem": "@color/colorButton",
+      "organizador": "Hanna Morais Barbato",
+      "descricao": "Reuniao com cliente para aprovacao do layout pedido",
+      "horaInicio": "00:00",
+      "horaFim": "00:01"
     }
   ]
 }

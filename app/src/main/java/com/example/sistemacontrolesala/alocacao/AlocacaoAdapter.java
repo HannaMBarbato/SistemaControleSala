@@ -1,7 +1,6 @@
 package com.example.sistemacontrolesala.alocacao;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
-
 import com.example.sistemacontrolesala.R;
-import com.example.sistemacontrolesala.ResourcesUtil;
 
 import java.util.List;
 
@@ -38,7 +34,7 @@ public class AlocacaoAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return i;
     }
 
     @Override
@@ -46,13 +42,8 @@ public class AlocacaoAdapter extends BaseAdapter {
         View viewCriada = LayoutInflater.from(context).inflate(R.layout.item_alocacao, viewGroup, false);
         Alocacao alocacao = listaAlocacao.get(posicao);
 
-       /* ImageView imagem = viewCriada.findViewById(R.id.itemAlocacaoTira);
-        Drawable drawableImgListaAlocacao = ResourcesUtil.devolveDrawable(context, alocacao.getImagem());
-        imagem.setImageDrawable(drawableImgListaAlocacao);*/
-
-       /*ImageView imagem = viewCriada.findViewById(R.id.itemAlocacaoTira);
-       imagem.setColorFilter(alocacao.getImagem());*/
-
+        ImageView imagem = viewCriada.findViewById(R.id.itemAlocacaoTira);
+        imagem.setImageResource(R.color.colorButton);
 
         TextView organizador = viewCriada.findViewById(R.id.itemAlocacaoNomeOrganizador);
         organizador.setText(alocacao.getOrganizador());

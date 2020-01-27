@@ -7,33 +7,32 @@
     android:background="@android:drawable/screen_background_dark_transparent"
     tools:context=".alocacao.AlocacaoSalasView">
 
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="20dp"
-        android:background="@drawable/calendario_customizado"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+   <com.applandeo.materialcalendarview.CalendarView
+       android:id="@+id/calendarView"
+       android:layout_width="340dp"
+       android:layout_height="400dp"
+       android:layout_margin="20dp"
+       android:background="@drawable/calendario_customizado"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       app:layout_constraintVertical_bias="0.0">
+
+   </com.applandeo.materialcalendarview.CalendarView>
 
     <ListView
         android:id="@+id/alocacaoSalaListView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/item_alocacao"
-        app:layout_constraintTop_toBottomOf="@id/calendarView"
+        android:layout_height="0dp"
+        android:divider="@null"
+        android:dividerHeight="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.0"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendarView"
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/item_alocacao" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
