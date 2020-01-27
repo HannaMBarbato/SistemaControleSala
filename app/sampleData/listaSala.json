@@ -1,0 +1,46 @@
+{
+  "listaSalas": [
+    {
+      "imagem": "@drawable/recife_pe",
+      "titulo": "Conselho Jedi"
+    },
+    {
+      "imagem": "@drawable/belo_horizonte_mg",
+      "titulo": "Conselho jedi"
+    },
+    {
+      "imagem": "@drawable/foz_do_iguacu_pr",
+      "titulo": "Sala 3"
+    }
+  ],
+  "listaAlocacao": [
+    {
+      "imagem": "@color/colorButton",
+      "organizador": "Hanna Morais Barbato",
+      "descricao": "Reuniao com cliente para aprovacao do layout pedido",
+      "horaInicio": "00:00",
+      "horaFim": "00:01"
+    },
+    {
+      "imagem": "@color/colorButton",
+      "organizador": "Hanna Morais Barbato",
+      "descricao": "Reuniao com cliente para aprovacao do layout pedido",
+      "horaInicio": "00:00",
+      "horaFim": "00:01"
+    },
+    {
+      "imagem": "@color/colorButton",
+      "organizador": "Hanna Morais Barbato",
+      "descricao": "Reuniao com cliente para aprovacao do layout pedido",
+      "horaInicio": "00:00",
+      "horaFim": "00:01"
+    },
+    {
+      "imagem": "@color/colorButton",
+      "organizador": "Hanna Morais Barbato",
+      "descricao": "Reuniao com cliente para aprovacao do layout pedido",
+      "horaInicio": "00:00",
+      "horaFim": "00:01"
+    }
+  ]
+}
