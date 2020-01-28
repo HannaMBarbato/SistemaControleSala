@@ -11,7 +11,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".usuario.CadastroUsuario"></activity>
         <activity android:name=".CadastroAlocacao" />
-        <activity android:name=".alocacao.AlocacaoSalasView" />
+        <activity android:name=".alocacao.AlocacaoSalasView"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".listaSalas.ListaSalasView" />
         <activity
             android:name=".MainActivity"
