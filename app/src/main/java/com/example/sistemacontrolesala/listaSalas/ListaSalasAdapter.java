@@ -9,6 +9,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
+import com.example.sistemacontrolesala.ImageAdapter;
 import com.example.sistemacontrolesala.R;
 import com.example.sistemacontrolesala.ResourcesUtil;
 
@@ -45,13 +51,14 @@ public class ListaSalasAdapter extends BaseAdapter {
         View viewCriada = LayoutInflater.from(context).inflate(R.layout.item_salas, viewGroup, false);
         ListaSala listaSala = listaSalas.get(posicao);
 
-        ImageView imagem = viewCriada.findViewById(R.id.itemSalaImagem);
-        Drawable drawableImgListaSala = ResourcesUtil.devolveDrawable(context, listaSala.getImagem());
-        imagem.setImageDrawable(drawableImgListaSala);
+        ViewPager viewPager = viewCriada.findViewById(R.id.itemSalaImagem);
+        ImageAdapter adapter = new ImageAdapter(context);
+        viewPager.setAdapter(adapter);
 
         TextView titulo = viewCriada.findViewById(R.id.itemSalaTitulo);
         titulo.setText(listaSala.getTitulo());
 
         return viewCriada;
     }
+
 }

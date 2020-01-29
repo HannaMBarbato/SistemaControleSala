@@ -1,6 +1,7 @@
 package com.example.sistemacontrolesala.listaSalas;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +22,7 @@ public class ListaSalasView extends AppCompatActivity {
         setContentView(R.layout.activity_lista_salas);
         setTitle("Salas");
 
-        ListView listSalas= findViewById(R.id.listaSalaListView);
+        ListView listSalas = findViewById(R.id.listaSalaListView);
         List<ListaSala> listaSalas = new ListaSalaDao().listaSalas();
         listSalas.setAdapter(new ListaSalasAdapter(listaSalas, this));
     }
