@@ -12,13 +12,14 @@
         android:orientation="vertical">
 
         <EditText
+            android:id="@+id/editNomeCadastro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:hint="Nome: "></EditText>
 
         <EditText
-            android:id="@+id/editEmail"
+            android:id="@+id/editEmailCadastro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -26,8 +27,15 @@
             android:hint="Email"
             android:inputType="textEmailAddress" />
 
+        <EditText
+            android:id="@+id/editSenhaCadastro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Senha" />
+
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btnCadastrarUsuario"
             android:layout_width="200dp"
             android:layout_height="40dp"
             android:layout_gravity="center"

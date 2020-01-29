@@ -18,7 +18,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,8 +29,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final EditText editEmail = findViewById(R.id.editEmail);
-        final EditText editPassword = findViewById(R.id.editSenha);
+        final EditText editEmail = findViewById(R.id.editEmailLogin);
+        final EditText editPassword = findViewById(R.id.editSenhaLogin);
 
         btnEntrar = findViewById(R.id.btnEntrar);
 
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
                 final String password = editPassword.getText().toString();
                 try {
                     resultAuth = new Verificador().execute(email, password).get();
+
                     if (resultAuth.equals("Login efetuado com sucesso!")) {
                         startActivity(new Intent(MainActivity.this, ListaSalasView.class));
                         finish();

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import com.example.sistemacontrolesala.MainActivity;
 import com.example.sistemacontrolesala.alocacao.AlocacaoSalasView;
 import com.example.sistemacontrolesala.R;
 
@@ -25,8 +26,15 @@ public class ListaSalasView extends AppCompatActivity {
         listSalas.setAdapter(new ListaSalasAdapter(listaSalas, this));
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(ListaSalasView.this, MainActivity.class));
+        finish();
+    }
+
     public void clickCardView(View view) {
         startActivity(new Intent(ListaSalasView.this, AlocacaoSalasView.class));
-
+        finish();
     }
 }

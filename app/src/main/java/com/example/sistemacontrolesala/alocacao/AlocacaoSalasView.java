@@ -14,6 +14,7 @@ import com.example.sistemacontrolesala.R;
 import com.example.sistemacontrolesala.listaSalas.ListaSala;
 import com.example.sistemacontrolesala.listaSalas.ListaSalaDao;
 import com.example.sistemacontrolesala.listaSalas.ListaSalasAdapter;
+import com.example.sistemacontrolesala.listaSalas.ListaSalasView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -24,6 +25,13 @@ import java.util.List;
 public class AlocacaoSalasView extends AppCompatActivity {
 
     private String dataBr;
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(AlocacaoSalasView.this, ListaSalasView.class));
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +49,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(AlocacaoSalasView.this, CadastroAlocacao.class));
+                finish();
             }
         });
 
@@ -54,6 +63,8 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
             }
         });
+
+
 
     }
 }
