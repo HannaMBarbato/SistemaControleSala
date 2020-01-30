@@ -1,4 +1,4 @@
-package com.example.sistemacontrolesala;
+package com.example.sistemacontrolesala.listaSalas;
 
 import android.content.Context;
 import android.view.View;
@@ -7,6 +7,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
+
+import com.example.sistemacontrolesala.R;
 
 public class ImageAdapter extends PagerAdapter {
 

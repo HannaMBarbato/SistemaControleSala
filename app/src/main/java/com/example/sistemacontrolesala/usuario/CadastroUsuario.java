@@ -5,15 +5,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.sistemacontrolesala.MainActivity;
 import com.example.sistemacontrolesala.R;
+import com.example.sistemacontrolesala.organizacao.Organizacao;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,16 +27,23 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class CadastroUsuario extends AppCompatActivity {
+public class CadastroUsuario extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private EditText editNome, editEmail, editSenha;
     private Button btnCadastroUsuario;
+    private Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_usuario);
+
+        spinner = findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(this);
 
         editNome = findViewById(R.id.editNomeCadastro);
         editEmail = findViewById(R.id.editEmailCadastro);
@@ -73,9 +86,85 @@ public class CadastroUsuario extends AppCompatActivity {
                 }
             }
         });
+
+        editEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    String emailAfterTextChange = editEmail.getText().toString();
+                    if (emailAfterTextChange.contains("@")) {
+                        String[] emailCompleto = emailAfterTextChange.split("@");
+                        if (emailCompleto.length > 1) {
+                            String dominio = emailCompleto[1];
+                            if (dominio.contains(".")) {
+                                try {
+                                    String listaOrganizacao = new IdOrganizacaoCadastroUsuario().execute(dominio).get();
+                                    System.out.println("dominio: " + dominio);
+                                    System.out.println("empresa " + listaOrganizacao);
+
+                                    JSONArray arrayOrganizacoes = new JSONArray(listaOrganizacao);
+                                    List<Organizacao> listOrganizacao = new ArrayList<>();
+                                    if (arrayOrganizacoes.length() > 0) {
+                                        for (int i = 0; i < arrayOrganizacoes.length(); i++) {
+                                            JSONObject objetoOrganizacao = arrayOrganizacoes.getJSONObject(i);
+                                            if (objetoOrganizacao.has("id") && objetoOrganizacao.has("nome") && objetoOrganizacao.has("tipoOrganizacao")) {
+                                                int id = objetoOrganizacao.getInt("id");
+                                                String nome = objetoOrganizacao.getString("nome");
+                                                String tipoOrganizacao = objetoOrganizacao.getString("tipoOrganizacao");
+
+                                                Organizacao novaOrganizacao = new Organizacao();
+                                                novaOrganizacao.setId(id);
+                                                novaOrganizacao.setNome(nome);
+                                                novaOrganizacao.setTipoOrganizacao(tipoOrganizacao);
+
+                                                listOrganizacao.add(novaOrganizacao);
+
+                                                System.out.println("empresa " + listOrganizacao);
+                                            }
+                                        }
+
+                                    } else {
+                                        //nada
+                                    }
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(CadastroUsuario.this, MainActivity.class));
+        finish();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
+
+
     public class CadastroUsuarioConexao extends AsyncTask<String, Void, String> {
+    /*    ArrayList<String>list;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            list = new ArrayList<>();
+        }*/
+
         @Override
         protected String doInBackground(String... strings) {
             String urlWS = "http://172.30.248.117:8080/ReservaDeSala/rest/usuario/cadastro/";
@@ -95,18 +184,12 @@ public class CadastroUsuario extends AppCompatActivity {
                     result.append(line);
                 }
                 rd.close();
+
                 return result.toString();
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return result.toString();
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(CadastroUsuario.this, MainActivity.class));
-        finish();
     }
 }

@@ -1,12 +1,11 @@
-package com.example.sistemacontrolesala;
+package com.example.sistemacontrolesala.alocacao;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.sistemacontrolesala.alocacao.AlocacaoSalasView;
-import com.example.sistemacontrolesala.listaSalas.ListaSalasView;
+import com.example.sistemacontrolesala.R;
 
 public class CadastroAlocacao extends AppCompatActivity {
 

@@ -9,11 +9,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.sistemacontrolesala.CadastroAlocacao;
 import com.example.sistemacontrolesala.R;
-import com.example.sistemacontrolesala.listaSalas.ListaSala;
-import com.example.sistemacontrolesala.listaSalas.ListaSalaDao;
-import com.example.sistemacontrolesala.listaSalas.ListaSalasAdapter;
 import com.example.sistemacontrolesala.listaSalas.ListaSalasView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;

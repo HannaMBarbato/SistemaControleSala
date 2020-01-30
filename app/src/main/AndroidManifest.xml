@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".usuario.CadastroUsuario"></activity>
-        <activity android:name=".CadastroAlocacao" />
+        <activity android:name=".alocacao.CadastroAlocacao" />
         <activity android:name=".alocacao.AlocacaoSalasView"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".listaSalas.ListaSalasView" />
