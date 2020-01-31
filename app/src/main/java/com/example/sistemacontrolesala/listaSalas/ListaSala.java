@@ -3,10 +3,10 @@ package com.example.sistemacontrolesala.listaSalas;
 public class ListaSala {
 
     private int id;
-    private String imagem;
+    private int imagem;
     private String titulo;
 
-    public ListaSala(String imagem, String titulo) {
+    public ListaSala(int imagem, String titulo) {
         this.imagem = imagem;
         this.titulo = titulo;
     }
@@ -19,11 +19,11 @@ public class ListaSala {
         this.id = id;
     }
 
-    public String getImagem() {
+    public int getImagem() {
         return imagem;
     }
 
-    public void setImagem(String imagem) {
+    public void setImagem(int imagem) {
         this.imagem = imagem;
     }
 

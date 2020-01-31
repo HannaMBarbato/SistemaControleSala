@@ -5,11 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -36,6 +35,8 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
     private EditText editNome, editEmail, editSenha;
     private Button btnCadastroUsuario;
     private Spinner spinner;
+    private int idOrganizacao;
+    private List<Organizacao> listOrganizacao = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,16 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
         setContentView(R.layout.activity_cadastro_usuario);
 
         spinner = findViewById(R.id.spinner);
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                idOrganizacao = listOrganizacao.get(position).getId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         editNome = findViewById(R.id.editNomeCadastro);
         editEmail = findViewById(R.id.editEmailCadastro);
@@ -65,6 +75,7 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
                     usuarioJson.put("nome", nome);
                     usuarioJson.put("email", email);
                     usuarioJson.put("senha", senha);
+                    usuarioJson.put("idOrganizacao", idOrganizacao);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(CadastroUsuario.this, "Houve algum erro", Toast.LENGTH_LONG).show();
@@ -103,7 +114,8 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
                                     System.out.println("empresa " + listaOrganizacao);
 
                                     JSONArray arrayOrganizacoes = new JSONArray(listaOrganizacao);
-                                    List<Organizacao> listOrganizacao = new ArrayList<>();
+
+                                    List<String> listaDeStrings = new ArrayList<>();
                                     if (arrayOrganizacoes.length() > 0) {
                                         for (int i = 0; i < arrayOrganizacoes.length(); i++) {
                                             JSONObject objetoOrganizacao = arrayOrganizacoes.getJSONObject(i);
@@ -118,11 +130,13 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
                                                 novaOrganizacao.setTipoOrganizacao(tipoOrganizacao);
 
                                                 listOrganizacao.add(novaOrganizacao);
-
-                                                System.out.println("empresa " + listOrganizacao);
+                                                listaDeStrings.add(novaOrganizacao.getNome());
                                             }
                                         }
-
+                                        ArrayAdapter<String> adapter = new ArrayAdapter<>(CadastroUsuario.this, android.R.layout.simple_spinner_item, listaDeStrings);
+                                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                        spinner.setAdapter(adapter);
+                                        spinner.setVisibility(View.VISIBLE);
                                     } else {
                                         //nada
                                     }
@@ -156,14 +170,7 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
     public void onNothingSelected(AdapterView<?> parent) {
     }
 
-
     public class CadastroUsuarioConexao extends AsyncTask<String, Void, String> {
-    /*    ArrayList<String>list;
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            list = new ArrayList<>();
-        }*/
 
         @Override
         protected String doInBackground(String... strings) {
