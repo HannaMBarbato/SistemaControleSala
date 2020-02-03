@@ -109,7 +109,7 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
                             String dominio = emailCompleto[1];
                             if (dominio.contains(".")) {
                                 try {
-                                    String listaOrganizacao = new IdOrganizacaoCadastroUsuario().execute(dominio).get();
+                                    String listaOrganizacao = new IdOrganizacaoCadastroUsuarioService().execute(dominio).get();
                                     System.out.println("dominio: " + dominio);
                                     System.out.println("empresa " + listaOrganizacao);
 

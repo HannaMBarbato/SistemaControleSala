@@ -14,7 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IdOrganizacaoCadastroUsuario extends AsyncTask<String, Void, String> {
+public class IdOrganizacaoCadastroUsuarioService extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
