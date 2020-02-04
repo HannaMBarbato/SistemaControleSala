@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -14,14 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sistemacontrolesala.MainActivity;
 import com.example.sistemacontrolesala.R;
-import com.example.sistemacontrolesala.alocacao.AlocacaoSalasView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListaSalasView extends AppCompatActivity {
 
-    List<ListaSala> listaSalas;
+    List<ListaSala> listaSalasViewPager;
+    List<ListaSala> listaSalasListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +28,19 @@ public class ListaSalasView extends AppCompatActivity {
         setContentView(R.layout.activity_lista_salas);
         setTitle("Salas");
 
-        listaSalas = new ArrayList<>();
-        listaSalas.add(new ListaSala(R.drawable.foz_do_iguacu_pr, "Brochure"));
-        listaSalas.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));
+        /*listaSalasViewPager = new ArrayList<>();
+        listaSalasViewPager.add(new ListaSala(R.drawable.foz_do_iguacu_pr, "Brochure"));
+        listaSalasViewPager.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));*/
+
+        listaSalasListView = new ArrayList<>();
+        listaSalasListView.add(new ListaSala(R.drawable.foz_do_iguacu_pr, "Brochure"));
+        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));
+        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));
+        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));
+
 
         ListView listSalas = findViewById(R.id.listaSalaListView);
-        listSalas.setAdapter(new ListaSalasAdapter(listaSalas, this));
+        listSalas.setAdapter(new ListaSalasAdapter(listaSalasListView, this));
     }
 
     @Override
@@ -49,7 +55,12 @@ public class ListaSalasView extends AppCompatActivity {
         if (item.getItemId() == R.id.menu_suspensoSair) {
             SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
             SharedPreferences.Editor editor = pref.edit();
-            editor.remove("email");
+            editor.remove("userEmail");
+            editor.remove("userName");
+            editor.remove("userId");
+            editor.remove("userNomeOrganizacao");
+            editor.remove("userTipoOrganizacao");
+            editor.remove("userIdOrganizacao");
             editor.commit();
 
             startActivity(new Intent(ListaSalasView.this, MainActivity.class));
@@ -57,11 +68,5 @@ public class ListaSalasView extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 }
