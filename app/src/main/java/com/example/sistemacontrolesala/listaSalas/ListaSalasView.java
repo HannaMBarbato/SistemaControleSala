@@ -1,30 +1,27 @@
 package com.example.sistemacontrolesala.listaSalas;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
-
-import android.animation.ArgbEvaluator;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.sistemacontrolesala.MainActivity;
-import com.example.sistemacontrolesala.alocacao.AlocacaoSalasView;
 import com.example.sistemacontrolesala.R;
+import com.example.sistemacontrolesala.alocacao.AlocacaoSalasView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListaSalasView extends AppCompatActivity {
 
-    ViewPager viewPager;
-    ImageAdapter adapter;
     List<ListaSala> listaSalas;
-    Integer[] colors = null;
-    ArgbEvaluator argbEvaluator = new ArgbEvaluator();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,70 +29,39 @@ public class ListaSalasView extends AppCompatActivity {
         setContentView(R.layout.activity_lista_salas);
         setTitle("Salas");
 
-
-       // ListView listSalas = findViewById(R.id.listaSalaListView);
-
         listaSalas = new ArrayList<>();
         listaSalas.add(new ListaSala(R.drawable.foz_do_iguacu_pr, "Brochure"));
         listaSalas.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));
 
-       /* List<ListaSala> listaSala = listaSalas;
-        listSalas.setAdapter(new ListaSalasAdapter(listaSalas, this));*/
+        ListView listSalas = findViewById(R.id.listaSalaListView);
+        listSalas.setAdapter(new ListaSalasAdapter(listaSalas, this));
+    }
 
-        adapter = new ImageAdapter(listaSalas, this);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_suspenso, menu);
+        return true;
+    }
 
-        viewPager = findViewById(R.id.viewPagerUm);
-        viewPager.setAdapter(adapter);
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_suspensoSair) {
+            SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.remove("email");
+            editor.commit();
 
-        Integer[] colors_temp = {
-                getResources().getColor(R.color.colorButton),
-                getResources().getColor(R.color.colorPrimary)
+            startActivity(new Intent(ListaSalasView.this, MainActivity.class));
+            finish();
 
-        };
-
-        colors = colors_temp;
-
-        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position < (adapter.getCount() -1) && position < (colors.length - 1)) {
-                    viewPager.setBackgroundColor(
-
-                            (Integer) argbEvaluator.evaluate(
-                                    positionOffset,
-                                    colors[position],
-                                    colors[position + 1]
-                            )
-                    );
-                }
-
-                else {
-                    viewPager.setBackgroundColor(colors[colors.length - 1]);
-                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(ListaSalasView.this, MainActivity.class));
-        finish();
-    }
-
-    public void clickCardView(View view) {
-        startActivity(new Intent(ListaSalasView.this, AlocacaoSalasView.class));
         finish();
     }
 }

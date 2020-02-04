@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
@@ -53,14 +54,13 @@ public class ImageAdapter extends PagerAdapter {
         imageView.setImageResource(listaSalas.get(position).getImagem());
         title.setText(listaSalas.get(position).getTitulo());
 
-
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, AlocacaoSalasView.class);
                 intent.putExtra("param", listaSalas.get(position).getTitulo());
                 context.startActivity(intent);
-                // finish();
+                ((Activity) context).finish();
             }
         });
 
@@ -70,7 +70,7 @@ public class ImageAdapter extends PagerAdapter {
 
     @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-        container.removeView((View)object);
+        container.removeView((View) object);
     }
 }
 
