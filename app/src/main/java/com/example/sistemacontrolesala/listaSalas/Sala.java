@@ -1,13 +1,15 @@
 package com.example.sistemacontrolesala.listaSalas;
 
-public class ListaSala {
+public class Sala {
 
     private int id;
     private int imagem;
-    private String titulo;
+    private String nome;
 
-    private String quantidadePessoasSentadas;
-    private String possuiMultimidia;
+    private int idOrganizacao;
+
+    private int quantidadePessoasSentadas;
+    private boolean possuiMultimidia;
     private boolean possuiArcon;
     private double areaDaSala;
     private String localizacao;
@@ -16,12 +18,6 @@ public class ListaSala {
     private boolean ativo;
     private String dataCriacao;
     private String dataAlteracao;
-
-    public ListaSala(int imagem, String titulo, String quantidadePessoasSentadas) {
-        this.imagem = imagem;
-        this.titulo = titulo;
-        this.quantidadePessoasSentadas = quantidadePessoasSentadas;
-    }
 
     public int getId() {
         return id;
@@ -39,27 +35,35 @@ public class ListaSala {
         this.imagem = imagem;
     }
 
-    public String getTitulo() {
-        return titulo;
+    public String getNome() {
+        return nome;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public String getQuantidadePessoasSentadas() {
+    public int getIdOrganizacao() {
+        return idOrganizacao;
+    }
+
+    public void setIdOrganizacao(int idOrganizacao) {
+        this.idOrganizacao = idOrganizacao;
+    }
+
+    public int getQuantidadePessoasSentadas() {
         return quantidadePessoasSentadas;
     }
 
-    public void setQuantidadePessoasSentadas(String quantidadePessoasSentadas) {
+    public void setQuantidadePessoasSentadas(int quantidadePessoasSentadas) {
         this.quantidadePessoasSentadas = quantidadePessoasSentadas;
     }
 
-    public String getPossuiMultimidia() {
+    public boolean isPossuiMultimidia() {
         return possuiMultimidia;
     }
 
-    public void setPossuiMultimidia(String possuiMultimidia) {
+    public void setPossuiMultimidia(boolean possuiMultimidia) {
         this.possuiMultimidia = possuiMultimidia;
     }
 

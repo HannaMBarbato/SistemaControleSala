@@ -14,13 +14,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.sistemacontrolesala.MainActivity;
 import com.example.sistemacontrolesala.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListaSalasView extends AppCompatActivity {
 
-    List<ListaSala> listaSalasViewPager;
-    List<ListaSala> listaSalasListView;
+    List<Sala> salasListView = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +30,43 @@ public class ListaSalasView extends AppCompatActivity {
         setContentView(R.layout.activity_lista_salas);
         setTitle("Salas");
 
-        listaSalasListView = new ArrayList<>();
-        listaSalasListView.add(new ListaSala(R.drawable.foz_do_iguacu_pr, "Brochure","20"));
-        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker","6"));
-        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker","8"));
-        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker","10"));
+        try {
+            SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
+            String idOrganizacaoRecuperado = pref.getString("userIdOrganizacao", null);
+
+            String listaSalasString = new ListaSalasService().execute(idOrganizacaoRecuperado).get();
+            if (listaSalasString.length() > 2) {
+                JSONArray arraySalas = new JSONArray(listaSalasString);
+                List<String> salasStrings = new ArrayList<>();
+                for (int i = 0; i < arraySalas.length(); i++) {
+                    JSONObject objetoSalas = arraySalas.getJSONObject(i);
+                    if (objetoSalas.has("nome") && objetoSalas.has("idOrganizacao") && objetoSalas.has("quantidadePessoasSentadas")) {
+                        String nome = objetoSalas.getString("nome");
+                        int quantidadePessoasSentadas = objetoSalas.getInt("quantidadePessoasSentadas");
+                        boolean multimidia = objetoSalas.getBoolean("possuiMultimidia");
+                        boolean arCondicionado = objetoSalas.getBoolean("possuiArcon");
+                        double areaSala = objetoSalas.getDouble("areaDaSala");
+                        String localizacao = objetoSalas.getString("localizacao");
+
+                        Sala novaSala = new Sala();
+                        novaSala.setNome(nome);
+                        novaSala.setQuantidadePessoasSentadas(quantidadePessoasSentadas);
+                        novaSala.setPossuiMultimidia(multimidia);
+                        novaSala.setPossuiArcon(arCondicionado);
+                        novaSala.setAreaDaSala(areaSala);
+                        novaSala.setLocalizacao(localizacao);
+
+                        salasListView.add(novaSala);
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         ListView listSalas = findViewById(R.id.listaSalaListView);
-        listSalas.setAdapter(new ListaSalasAdapter(listaSalasListView, this));
+        listSalas.setAdapter(new ListaSalasListView(salasListView, this));
     }
 
     @Override
@@ -60,7 +91,6 @@ public class ListaSalasView extends AppCompatActivity {
 
             startActivity(new Intent(ListaSalasView.this, MainActivity.class));
             finish();
-
         }
         return super.onOptionsItemSelected(item);
     }

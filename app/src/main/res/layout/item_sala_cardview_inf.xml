@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
@@ -8,31 +9,59 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_margin="10dp"
-        android:background="@drawable/text_customizado">
+        android:background="@drawable/text_customizado"
+        app:cardCornerRadius="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/itemSalaQuantidadePessoasSentadas"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="Conselho Jedi"
+                android:layout_margin="5dp"
+                android:text="Quantidade Pessoas: 20"
                 android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:textStyle="bold" />
+                android:textSize="18dp" />
 
-            <!--<TextView
+            <TextView
                 android:id="@+id/itemSalaPossuiMultimidia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Conselho Jedi"
-                android:layout_margin="8dp"
+                android:layout_margin="5dp"
+                android:text="Possui Multimidia: nao"
                 android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:textStyle="bold" />-->
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/itemSalaPossuiArcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Possui Ar Condicionado: nao"
+                android:textColor="@android:color/black"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/itemSalaAreaDaSala"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Area da Sala: nao"
+                android:textColor="@android:color/black"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/itemSalaLocalizacao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="Localizacao: nao"
+                android:textColor="@android:color/black"
+                android:textSize="18dp" />
+
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>

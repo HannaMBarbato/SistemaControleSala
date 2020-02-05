@@ -12,13 +12,13 @@ import com.example.sistemacontrolesala.R;
 
 import java.util.List;
 
-public class ListaSalasAdapter extends BaseAdapter {
+public class ListaSalasListView extends BaseAdapter {
 
-    private final List<ListaSala> listaSalas;
+    private List<Sala> listaSalas;
     private Context context;
 
-    public ListaSalasAdapter(List<ListaSala> listaSalas, Context context) {
-        this.listaSalas = listaSalas;
+    public ListaSalasListView(List<Sala> salas, Context context) {
+        this.listaSalas = salas;
         this.context = context;
     }
 
@@ -42,7 +42,7 @@ public class ListaSalasAdapter extends BaseAdapter {
         View viewCriada = LayoutInflater.from(context).inflate(R.layout.item_salas_view_pager, viewGroup, false);
 
         ViewPager viewPager = viewCriada.findViewById(R.id.viewPagerAqui);
-        ImageAdapter adapter = new ImageAdapter(listaSalas.get(posicao), context);
+        ListaSalaViewPager adapter = new ListaSalaViewPager(listaSalas.get(posicao), context);
         viewPager.setAdapter(adapter);
 
         return viewCriada;
