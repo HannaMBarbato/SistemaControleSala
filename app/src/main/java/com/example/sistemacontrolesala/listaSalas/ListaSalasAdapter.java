@@ -42,7 +42,7 @@ public class ListaSalasAdapter extends BaseAdapter {
         View viewCriada = LayoutInflater.from(context).inflate(R.layout.item_salas_view_pager, viewGroup, false);
 
         ViewPager viewPager = viewCriada.findViewById(R.id.viewPagerAqui);
-        ImageAdapter adapter = new ImageAdapter(listaSalas, context);
+        ImageAdapter adapter = new ImageAdapter(listaSalas.get(posicao), context);
         viewPager.setAdapter(adapter);
 
         return viewCriada;

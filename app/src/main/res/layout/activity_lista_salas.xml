@@ -10,6 +10,6 @@
         android:id="@+id/listaSalaListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_salas" />
+        tools:listitem="@layout/item_salas_cardview_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,16 +28,11 @@ public class ListaSalasView extends AppCompatActivity {
         setContentView(R.layout.activity_lista_salas);
         setTitle("Salas");
 
-        /*listaSalasViewPager = new ArrayList<>();
-        listaSalasViewPager.add(new ListaSala(R.drawable.foz_do_iguacu_pr, "Brochure"));
-        listaSalasViewPager.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));*/
-
         listaSalasListView = new ArrayList<>();
-        listaSalasListView.add(new ListaSala(R.drawable.foz_do_iguacu_pr, "Brochure"));
-        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));
-        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));
-        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker"));
-
+        listaSalasListView.add(new ListaSala(R.drawable.foz_do_iguacu_pr, "Brochure","20"));
+        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker","6"));
+        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker","8"));
+        listaSalasListView.add(new ListaSala(R.drawable.belo_horizonte_mg, "Sticker","10"));
 
         ListView listSalas = findViewById(R.id.listaSalaListView);
         listSalas.setAdapter(new ListaSalasAdapter(listaSalasListView, this));

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.viewpager.widget.PagerAdapter;
@@ -16,22 +15,20 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.example.sistemacontrolesala.R;
 import com.example.sistemacontrolesala.alocacao.AlocacaoSalasView;
 
-import java.util.List;
-
 public class ImageAdapter extends PagerAdapter {
 
-    private List<ListaSala> listaSalas;
+    private ListaSala listaSalas;
     private LayoutInflater layoutInflater;
     private Context context;
 
-    public ImageAdapter(List<ListaSala> listaSalas, Context context) {
+    public ImageAdapter(ListaSala listaSalas, Context context) {
         this.context = context;
         this.listaSalas = listaSalas;
     }
 
     @Override
     public int getCount() {
-        return listaSalas.size();
+        return 2;
     }
 
     @Override
@@ -41,31 +38,42 @@ public class ImageAdapter extends PagerAdapter {
 
     @NonNull
     @Override
-    public Object instantiateItem(@NonNull ViewGroup container, final int position) {
-        layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.item_salas, container, false);
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
-        ImageView imageView;
-        TextView title;
+        if(position == 0){
+            layoutInflater = LayoutInflater.from(context);
+            View view = layoutInflater.inflate(R.layout.item_salas_cardview_image, container, false);
 
-        imageView = view.findViewById(R.id.itemSalaImagem);
-        title = view.findViewById(R.id.itemSalaTitulo);
+            ImageView imageView = view.findViewById(R.id.itemSalaImagem);
+            TextView title = view.findViewById(R.id.itemSalaTitulo);
 
-        imageView.setImageResource(listaSalas.get(position).getImagem());
-        title.setText(listaSalas.get(position).getTitulo());
+            imageView.setImageResource(listaSalas.getImagem());
+            title.setText(listaSalas.getTitulo());
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, AlocacaoSalasView.class);
-                intent.putExtra("param", listaSalas.get(position).getTitulo());
-                context.startActivity(intent);
-                ((Activity) context).finish();
-            }
-        });
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, AlocacaoSalasView.class);
+                    intent.putExtra("param", listaSalas.getTitulo());
+                    context.startActivity(intent);
+                    ((Activity) context).finish();
+                }
+            });
+            container.addView(view, 0);
+            return view;
+        }
 
-        container.addView(view, 0);
-        return view;
+        if(position == 1){
+            layoutInflater = LayoutInflater.from(context);
+            View viewInf = layoutInflater.inflate(R.layout.item_sala_cardview_inf, container, false);
+
+            TextView quantidadePessoasSentadas = viewInf.findViewById(R.id.itemSalaQuantidadePessoasSentadas);
+            quantidadePessoasSentadas.setText(listaSalas.getQuantidadePessoasSentadas());
+
+            container.addView(viewInf, 0);
+            return viewInf;
+        }
+        return null;
     }
 
     @Override
