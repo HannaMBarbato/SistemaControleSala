@@ -90,7 +90,7 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
                         startActivity(new Intent(CadastroUsuario.this, MainActivity.class));
                         finish();
                     } else {
-                        Toast.makeText(CadastroUsuario.this, "Erroooou", Toast.LENGTH_LONG).show();
+                        Toast.makeText(CadastroUsuario.this, "Erro ao criar usuario", Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
