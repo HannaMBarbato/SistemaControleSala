@@ -1,33 +1,22 @@
 package com.example.sistemacontrolesala.alocacao;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sistemacontrolesala.R;
 import com.example.sistemacontrolesala.listaSalas.ListaSalasView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
-import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class AlocacaoSalasView extends AppCompatActivity {
-
-    private String dataBr;
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(AlocacaoSalasView.this, ListaSalasView.class));
-        finish();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,31 +25,37 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         setTitle("Alocações");
 
-        ListView listAlocacao= findViewById(R.id.alocacaoSalaListView);
-        List<Alocacao> listaAlocacao= new AlocacaoDao().listaAlocacao();
+        ListView listAlocacao = findViewById(R.id.alocacaoSalaListView);
+        List<Alocacao> listaAlocacao = new AlocacaoDao().listaAlocacao();
         listAlocacao.setAdapter(new AlocacaoAdapter(listaAlocacao, this));
+
+        final MaterialCalendarView calendarView = findViewById(R.id.calendarView);
+        calendarView.setDateSelected(CalendarDay.today(), true);
 
         FloatingActionButton btnCadastroAlocacao = findViewById(R.id.floatingActionButton);
         btnCadastroAlocacao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(AlocacaoSalasView.this, CadastroAlocacao.class));
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                String data = dateFormat.format(calendarView.getSelectedDate().getDate());
+
+                Intent enviadora = new Intent(getApplicationContext(), CadastroAlocacao.class);
+
+                Bundle parametros = new Bundle();
+                parametros.putString("Data", data);
+                enviadora.putExtras(parametros);
+
+                startActivity(enviadora);
                 finish();
-            }
-        });
-
-        MaterialCalendarView calendarView = findViewById(R.id.calendarView);
-        calendarView.setDateSelected(CalendarDay.today(), true);
-        //passar o mes voltar e marcar o dia (?)
-        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
-            @Override
-            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-               Toast.makeText(AlocacaoSalasView.this, "" + date, Toast.LENGTH_SHORT).show();
 
             }
         });
+    }
 
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(AlocacaoSalasView.this, ListaSalasView.class));
+        finish();
     }
 }
