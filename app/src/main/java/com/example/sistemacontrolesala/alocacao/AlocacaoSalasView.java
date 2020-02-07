@@ -42,7 +42,8 @@ public class AlocacaoSalasView extends AppCompatActivity {
                 Intent enviadora = new Intent(getApplicationContext(), CadastroAlocacao.class);
 
                 Bundle parametros = new Bundle();
-                parametros.putString("Data", data);
+                parametros.putString("DataStr", data);
+                parametros.putLong("Date", calendarView.getSelectedDate().getDate().getTime());
                 enviadora.putExtras(parametros);
 
                 startActivity(enviadora);

@@ -46,8 +46,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/cadastroAlocacaoEditHoraInicio"
+            <TextView
+                android:id="@+id/cadastroAlocacaoTxtHoraInicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -57,8 +57,8 @@
                 android:textColor="@android:color/black"
                 android:textSize="20dp" />
 
-            <EditText
-                android:id="@+id/cadastroAlocacaoEditHoraFim"
+            <TextView
+                android:id="@+id/cadastroAlocacaoTxtHoraFim"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -77,6 +77,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/cadastroAlocacaoBtnCancelar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -84,6 +85,7 @@
                 android:text="Cancelar" />
 
             <Button
+                android:id="@+id/cadastroAlocacaoBtnSalvar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="42dp"
