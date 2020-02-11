@@ -2,20 +2,13 @@ package com.example.sistemacontrolesala.alocacao;
 
 public class Alocacao {
 
-    //chave estrangeira id salas
     private String imagem;
     private String organizador;
     private String descricao;
     private String horaInicio;
     private String horaFim;
 
-    public Alocacao(String imagem, String organizador, String descricao, String horaInicio, String horaFim) {
-        this.imagem = imagem;
-        this.organizador = organizador;
-        this.descricao = descricao;
-        this.horaInicio = horaInicio;
-        this.horaFim = horaFim;
-    }
+    private int idSala;
 
     public String getImagem() {
         return imagem;
@@ -55,5 +48,13 @@ public class Alocacao {
 
     public void setHoraFim(String horaFim) {
         this.horaFim = horaFim;
+    }
+
+    public int getIdSala() {
+        return idSala;
+    }
+
+    public void setIdSala(int idSala) {
+        this.idSala = idSala;
     }
 }

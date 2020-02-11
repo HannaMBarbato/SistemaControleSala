@@ -3,6 +3,7 @@ package com.example.sistemacontrolesala.listaSalas;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,11 +40,11 @@ public class ListaSalaViewPager extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
 
-        if(position == 0){
+        if (position == 0) {
             layoutInflater = LayoutInflater.from(context);
             View view = layoutInflater.inflate(R.layout.item_salas_cardview_image, container, false);
 
-           // ImageView imageView = view.findViewById(R.id.itemSalaImagem);
+            // ImageView imageView = view.findViewById(R.id.itemSalaImagem);
             //imageView.setImageResource(sala.getImagem());
 
             TextView nome = view.findViewById(R.id.itemSalaNome);
@@ -53,7 +54,10 @@ public class ListaSalaViewPager extends PagerAdapter {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, AlocacaoSalasView.class);
-                    intent.putExtra("param", sala.getNome());
+                    Bundle parametros = new Bundle();
+                    parametros.putString("idSala", String.valueOf(sala.getId()));
+                    intent.putExtras(parametros);
+
                     context.startActivity(intent);
                     ((Activity) context).finish();
                 }
@@ -62,7 +66,7 @@ public class ListaSalaViewPager extends PagerAdapter {
             return view;
         }
 
-        if(position == 1){
+        if (position == 1) {
             layoutInflater = LayoutInflater.from(context);
             View viewInf = layoutInflater.inflate(R.layout.item_sala_cardview_inf, container, false);
 

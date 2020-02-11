@@ -37,10 +37,11 @@ public class ListaSalasView extends AppCompatActivity {
             String listaSalasString = new ListaSalasService().execute(idOrganizacaoRecuperado).get();
             if (listaSalasString.length() > 2) {
                 JSONArray arraySalas = new JSONArray(listaSalasString);
-                List<String> salasStrings = new ArrayList<>();
                 for (int i = 0; i < arraySalas.length(); i++) {
                     JSONObject objetoSalas = arraySalas.getJSONObject(i);
                     if (objetoSalas.has("nome") && objetoSalas.has("idOrganizacao") && objetoSalas.has("quantidadePessoasSentadas")) {
+                        int id = objetoSalas.getInt("id");
+
                         String nome = objetoSalas.getString("nome");
                         int quantidadePessoasSentadas = objetoSalas.getInt("quantidadePessoasSentadas");
                         boolean multimidia = objetoSalas.getBoolean("possuiMultimidia");
@@ -49,6 +50,8 @@ public class ListaSalasView extends AppCompatActivity {
                         String localizacao = objetoSalas.getString("localizacao");
 
                         Sala novaSala = new Sala();
+                        novaSala.setId(id);
+
                         novaSala.setNome(nome);
                         novaSala.setQuantidadePessoasSentadas(quantidadePessoasSentadas);
                         novaSala.setPossuiMultimidia(multimidia);

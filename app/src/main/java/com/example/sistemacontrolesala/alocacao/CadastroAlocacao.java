@@ -15,9 +15,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.sistemacontrolesala.MainActivity;
 import com.example.sistemacontrolesala.R;
-import com.example.sistemacontrolesala.usuario.CadastroUsuario;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +23,6 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 public class CadastroAlocacao extends AppCompatActivity implements View.OnClickListener {
 
@@ -37,6 +34,8 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
     Context context = this;
 
     private int idSala, idUsuario;
+    private Long dateLong;
+    private long dateInicio, dateFim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +43,7 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_cadastro_alocacao);
 
         getPrefNomeOrganizador();
-        getDataDaActivityAlocacao();
+        getDataDaActivityAlocacao(dateLong);
 
         txtHoraInicio = findViewById(R.id.cadastroAlocacaoTxtHoraInicio);
         txtHoraFim = findViewById(R.id.cadastroAlocacaoTxtHoraFim);
@@ -60,8 +59,6 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 String resultAuth = "";
 
                 String descricao = editDescricao.getText().toString();
-                String horaInicio = txtHoraInicio.getText().toString();
-                String horaFim = txtHoraFim.getText().toString();
 
                 JSONObject reservaSalaJson = new JSONObject();
 
@@ -69,9 +66,11 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                     reservaSalaJson.put("idSala", idSala);
                     reservaSalaJson.put("idUsuario", idUsuario);
                     reservaSalaJson.put("descricao", descricao);
-                    //datas ficam em strings
-                    reservaSalaJson.put("dataHoraInicio", horaInicio);
-                    reservaSalaJson.put("dataHoraFim", horaFim);
+                    reservaSalaJson.put("dataHoraInicio", dateInicio);
+                    reservaSalaJson.put("dataHoraFim", dateFim);
+
+                    //String listaOrganizacao = new IdSalaCadastroAlocacao().execute().get();
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Toast.makeText(CadastroAlocacao.this, "Erro ao inserir dados da reserva", Toast.LENGTH_LONG).show();
@@ -89,7 +88,7 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                         Toast.makeText(CadastroAlocacao.this, "Erro ao reservar sala", Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
-                    Toast.makeText(CadastroAlocacao.this, e.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(CadastroAlocacao.this, e.getMessage(), Toast.LENGTH_LONG).show();
                     e.printStackTrace();
                 }
             }
@@ -100,6 +99,7 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
     public void onClick(View view) {
         final SimpleDateFormat formataHora = new SimpleDateFormat("HH:mm a", Locale.getDefault());
         final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(getDataDaActivityAlocacao(dateLong));
         final int hour = calendar.get(Calendar.HOUR_OF_DAY);
         final int minute = calendar.get(Calendar.MINUTE);
 
@@ -108,6 +108,8 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     getHora(hourOfDay, minute, calendar, formataHora, txtHoraInicio);
+                    dateInicio = calendar.getTime().getTime();
+                    System.out.println("DATA E HORA INICIO LONG " + dateInicio);
                 }
             }, hour, minute, android.text.format.DateFormat.is24HourFormat(context));
             timePickerDialog.show();
@@ -118,6 +120,8 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 @Override
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     getHora(hourOfDay, minute, calendar, formataHora, txtHoraFim);
+                    dateFim = calendar.getTime().getTime();
+                    System.out.println("DATA E HORA FIm LONG " + dateFim);
                 }
             }, hour, minute, android.text.format.DateFormat.is24HourFormat(this));
             timePickerDialog.show();
@@ -131,18 +135,22 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
         hora.setText(formataHora.format(calendar.getTime()));
     }
 
-    private void getDataDaActivityAlocacao() {
+    private Long getDataDaActivityAlocacao(Long dateLong) {
         stringData = findViewById(R.id.cadastroAlocacaoTxtData);
         Intent recebedora = getIntent();
         Bundle parametros = recebedora.getExtras();
         if (parametros != null) {
             String data = parametros.getString("DataStr");
-            long dateLong = parametros.getLong("Date");
-            System.out.println("DATE LONG " +dateLong);
+            dateLong = parametros.getLong("Date");
+            System.out.println("DATE LONG " + dateLong);
+
             stringData.setText(data);
+
+            return dateLong;
         } else {
             Toast.makeText(CadastroAlocacao.this, "Data nula", Toast.LENGTH_LONG).show();
         }
+        return null;
     }
 
     private void getPrefNomeOrganizador() {
