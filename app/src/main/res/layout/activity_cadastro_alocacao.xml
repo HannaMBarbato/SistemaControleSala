@@ -8,15 +8,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="25dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
         android:orientation="vertical"
         android:paddingBottom="50dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbarActivityAlocacao"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cadastro de Alocacao"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+        </androidx.appcompat.widget.Toolbar>
 
         <TextView
             android:id="@+id/cadastroAlocacaoTxtOrganizador"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
+            android:layout_marginTop="15dp"
             android:hint="Organizador: "
             android:textColor="@android:color/black"
             android:textSize="20dp" />
@@ -81,7 +103,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:background="@color/colorButton"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/botao_customizado"
                 android:text="Cancelar" />
 
             <Button
@@ -90,7 +113,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="42dp"
                 android:layout_marginTop="20dp"
-                android:background="@color/colorButton"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/botao_customizado"
                 android:text="Salvar" />
 
         </LinearLayout>

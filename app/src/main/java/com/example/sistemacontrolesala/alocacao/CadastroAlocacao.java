@@ -79,7 +79,7 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 try {
                     String novaReserva = Base64.encodeToString(reservaSalaJson.toString().getBytes("UTF-8"), Base64.NO_WRAP);
 
-                    resultAuth = new AlocacaoService().execute(novaReserva).get();
+                    resultAuth = new CadastroAlocacaoService().execute(novaReserva).get();
                     if (resultAuth.equals("Reserva realizada com sucesso")) {
                         Toast.makeText(CadastroAlocacao.this, "Reserva efetuada com sucesso", Toast.LENGTH_LONG).show();
                         startActivity(new Intent(CadastroAlocacao.this, AlocacaoSalasView.class));

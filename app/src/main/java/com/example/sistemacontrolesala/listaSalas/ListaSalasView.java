@@ -10,6 +10,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.sistemacontrolesala.MainActivity;
 import com.example.sistemacontrolesala.R;
@@ -28,7 +29,9 @@ public class ListaSalasView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_salas);
-        setTitle("Salas");
+
+        Toolbar toolbar = findViewById(R.id.toolbarActivityListaSala);
+        setSupportActionBar(toolbar);
 
         try {
             SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
