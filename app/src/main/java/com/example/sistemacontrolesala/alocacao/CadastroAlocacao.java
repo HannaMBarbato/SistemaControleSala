@@ -69,7 +69,7 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                     reservaSalaJson.put("dataHoraInicio", dateInicio);
                     reservaSalaJson.put("dataHoraFim", dateFim);
 
-                    //String listaOrganizacao = new IdSalaCadastroAlocacao().execute().get();
+                    //String listaOrganizacao = new IdSalaAlocacaoService().execute().get();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -163,7 +163,6 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        startActivity(new Intent(CadastroAlocacao.this, AlocacaoSalasView.class));
         finish();
     }
 }

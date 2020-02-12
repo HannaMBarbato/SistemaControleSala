@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class IdSalaCadastroAlocacao extends AsyncTask<String, Void, String> {
+public class IdSalaAlocacaoService extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {

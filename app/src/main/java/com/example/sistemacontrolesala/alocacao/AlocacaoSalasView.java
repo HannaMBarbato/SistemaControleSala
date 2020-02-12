@@ -9,7 +9,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sistemacontrolesala.R;
-import com.example.sistemacontrolesala.listaSalas.ListaSalasService;
 import com.example.sistemacontrolesala.listaSalas.ListaSalasView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -38,7 +37,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         System.out.println("ID SALA NA ALOCACAO " + idSalaString);
         try {
-            String listaAlocacaoString = new IdSalaCadastroAlocacao().execute(idSalaString).get();
+            String listaAlocacaoString = new IdSalaAlocacaoService().execute(idSalaString).get();
             if (listaAlocacaoString.length() > 2) {
                 System.out.println(listaAlocacaoString);
                 JSONArray arrayAlocacao = new JSONArray(listaAlocacaoString);
@@ -47,18 +46,21 @@ public class AlocacaoSalasView extends AppCompatActivity {
                     if (objetoAlocacao.has("nomeOrganizador") && objetoAlocacao.has("descricao") && objetoAlocacao.has("dataHoraInicio") && objetoAlocacao.has("dataHoraFim")) {
                         String nomeOrganizador = objetoAlocacao.getString("nomeOrganizador");
                         String descricao = objetoAlocacao.getString("descricao");
-                        String horaInicio = objetoAlocacao.getString("dataHoraInicio");
-                        String horaFim = objetoAlocacao.getString("dataHoraFim");
+                        String dataHoraInicio = objetoAlocacao.getString("dataHoraInicio");
+                        String dataHoraFim = objetoAlocacao.getString("dataHoraFim");
 
                         Alocacao novaAlocacao = new Alocacao();
 
                         novaAlocacao.setOrganizador(nomeOrganizador);
                         novaAlocacao.setDescricao(descricao);
+
+                        String horaInicio = dataHoraInicio.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
+                        String horaFim = dataHoraFim.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
+
                         novaAlocacao.setHoraInicio(horaInicio);
                         novaAlocacao.setHoraFim(horaFim);
 
                         alocacoesListView.add(novaAlocacao);
-
 
                     }
                 }
@@ -90,8 +92,6 @@ public class AlocacaoSalasView extends AppCompatActivity {
                 enviadora.putExtras(parametros);
 
                 startActivity(enviadora);
-                finish();
-
             }
         });
     }
