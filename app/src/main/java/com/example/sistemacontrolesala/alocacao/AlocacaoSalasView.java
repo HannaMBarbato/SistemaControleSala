@@ -1,6 +1,7 @@
 package com.example.sistemacontrolesala.alocacao;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
@@ -23,6 +24,8 @@ import java.util.List;
 
 public class AlocacaoSalasView extends AppCompatActivity {
     List<Alocacao> alocacoesListView = new ArrayList<>();
+    String idSalaString;
+    private AlocacaoAdapter adapter = new AlocacaoAdapter(alocacoesListView, this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,46 +36,15 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         Intent recebedora = getIntent();
         Bundle parametros = recebedora.getExtras();
-        String idSalaString = parametros.getString("idSala");
+        idSalaString = parametros.getString("idSala");
 
-        System.out.println("ID SALA NA ALOCACAO " + idSalaString);
-        try {
-            String listaAlocacaoString = new IdSalaAlocacaoService().execute(idSalaString).get();
-            if (listaAlocacaoString.length() > 2) {
-                System.out.println(listaAlocacaoString);
-                JSONArray arrayAlocacao = new JSONArray(listaAlocacaoString);
-                for (int i = 0; i < arrayAlocacao.length(); i++) {
-                    JSONObject objetoAlocacao = arrayAlocacao.getJSONObject(i);
-                    if (objetoAlocacao.has("nomeOrganizador") && objetoAlocacao.has("descricao") && objetoAlocacao.has("dataHoraInicio") && objetoAlocacao.has("dataHoraFim")) {
-                        String nomeOrganizador = objetoAlocacao.getString("nomeOrganizador");
-                        String descricao = objetoAlocacao.getString("descricao");
-                        String dataHoraInicio = objetoAlocacao.getString("dataHoraInicio");
-                        String dataHoraFim = objetoAlocacao.getString("dataHoraFim");
-
-                        Alocacao novaAlocacao = new Alocacao();
-
-                        novaAlocacao.setOrganizador(nomeOrganizador);
-                        novaAlocacao.setDescricao(descricao);
-
-                        String horaInicio = dataHoraInicio.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
-                        String horaFim = dataHoraFim.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
-
-                        novaAlocacao.setHoraInicio(horaInicio);
-                        novaAlocacao.setHoraFim(horaFim);
-
-                        alocacoesListView.add(novaAlocacao);
-
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-        }
+        SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putInt("idSala", Integer.parseInt(idSalaString));
+        editor.commit();
 
         ListView listAlocacao = findViewById(R.id.alocacaoSalaListView);
-        listAlocacao.setAdapter(new AlocacaoAdapter(alocacoesListView, this));
-
+        listAlocacao.setAdapter(adapter);
 
         final MaterialCalendarView calendarView = findViewById(R.id.calendarView);
         calendarView.setDateSelected(CalendarDay.today(), true);
@@ -97,9 +69,59 @@ public class AlocacaoSalasView extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        getReservas(idSalaString);
+        adapter.notifyDataSetChanged();
+        super.onResume();
+    }
+
+    private void getReservas(String idSalaString) {
+        try {
+            alocacoesListView.clear();
+            String listaAlocacaoString = new IdSalaAlocacaoService().execute(idSalaString).get();
+            if (listaAlocacaoString.length() > 2) {
+                System.out.println(listaAlocacaoString);
+                JSONArray arrayAlocacao = new JSONArray(listaAlocacaoString);
+                for (int i = 0; i < arrayAlocacao.length(); i++) {
+                    JSONObject objetoAlocacao = arrayAlocacao.getJSONObject(i);
+                    if (objetoAlocacao.has("nomeOrganizador") && objetoAlocacao.has("descricao") && objetoAlocacao.has("dataHoraInicio") && objetoAlocacao.has("dataHoraFim")) {
+                        String nomeOrganizador = objetoAlocacao.getString("nomeOrganizador");
+                        String descricao = objetoAlocacao.getString("descricao");
+                        String dataHoraInicio = objetoAlocacao.getString("dataHoraInicio");
+                        String dataHoraFim = objetoAlocacao.getString("dataHoraFim");
+
+                        String horaInicio = dataHoraInicio.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
+                        String horaFim = dataHoraFim.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
+
+                        Alocacao novaAlocacao = new Alocacao();
+
+                        novaAlocacao.setOrganizador(nomeOrganizador);
+                        novaAlocacao.setDescricao(descricao);
+                        novaAlocacao.setHoraInicio(horaInicio);
+                        novaAlocacao.setHoraFim(horaFim);
+
+                        alocacoesListView.add(novaAlocacao);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void deletarReserva(){
+
+    }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         startActivity(new Intent(AlocacaoSalasView.this, ListaSalasView.class));
         finish();
+
+        SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.remove("idSala");
     }
 }

@@ -27,15 +27,11 @@ import java.util.Locale;
 public class CadastroAlocacao extends AppCompatActivity implements View.OnClickListener {
 
     public TextView stringData;
-    SharedPreferences pref;
-
+    private SharedPreferences pref;
     private EditText editDescricao;
     private TextView txtHoraInicio, txtHoraFim;
-    Context context = this;
-
-    private int idSala, idUsuario;
-    private Long dateLong;
-    private long dateInicio, dateFim;
+    private Context context = this;
+    private long dateInicio, dateFim, dateLong;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,19 +53,19 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(View v) {
                 String resultAuth = "";
-
                 String descricao = editDescricao.getText().toString();
 
+                SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
+                int idSalaRecuperado = pref.getInt("idSala", 0);
+                String idUsuarioRecuperado = pref.getString("userId", null);
+
                 JSONObject reservaSalaJson = new JSONObject();
-
                 try {
-                    reservaSalaJson.put("idSala", idSala);
-                    reservaSalaJson.put("idUsuario", idUsuario);
+                    reservaSalaJson.put("id_sala", idSalaRecuperado);
+                    reservaSalaJson.put("id_usuario", Integer.parseInt(idUsuarioRecuperado));
                     reservaSalaJson.put("descricao", descricao);
-                    reservaSalaJson.put("dataHoraInicio", dateInicio);
-                    reservaSalaJson.put("dataHoraFim", dateFim);
-
-                    //String listaOrganizacao = new IdSalaAlocacaoService().execute().get();
+                    reservaSalaJson.put("data_hora_inicio", dateInicio);
+                    reservaSalaJson.put("data_hora_fim", dateFim);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -77,12 +73,11 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 }
 
                 try {
-                    String novaReserva = Base64.encodeToString(reservaSalaJson.toString().getBytes("UTF-8"), Base64.NO_WRAP);
+                    String novaReservaEncode = Base64.encodeToString(reservaSalaJson.toString().getBytes("UTF-8"), Base64.NO_WRAP);
 
-                    resultAuth = new CadastroAlocacaoService().execute(novaReserva).get();
+                    resultAuth = new CadastroAlocacaoService().execute(novaReservaEncode).get();
                     if (resultAuth.equals("Reserva realizada com sucesso")) {
-                        Toast.makeText(CadastroAlocacao.this, "Reserva efetuada com sucesso", Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(CadastroAlocacao.this, AlocacaoSalasView.class));
+                        Toast.makeText(CadastroAlocacao.this, "Reserva efetuada com sucesso", Toast.LENGTH_SHORT).show();
                         finish();
                     } else {
                         Toast.makeText(CadastroAlocacao.this, "Erro ao reservar sala", Toast.LENGTH_LONG).show();
@@ -97,7 +92,7 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        final SimpleDateFormat formataHora = new SimpleDateFormat("HH:mm a", Locale.getDefault());
+        final SimpleDateFormat formataHora = new SimpleDateFormat("HH:mm", Locale.getDefault());
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(getDataDaActivityAlocacao(dateLong));
         final int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -155,7 +150,6 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
 
     private void getPrefNomeOrganizador() {
         pref = getSharedPreferences("USER_DATA", 0);
-        final SharedPreferences.Editor editor = pref.edit();
         TextView organizador = findViewById(R.id.cadastroAlocacaoTxtOrganizador);
         organizador.setText("Organizador: " + pref.getString("userName", null));
     }
