@@ -2,6 +2,7 @@ package com.example.sistemacontrolesala.alocacao;
 
 public class Alocacao {
 
+    private int id;
     private String imagem;
     private String organizador;
     private String descricao;
@@ -9,6 +10,14 @@ public class Alocacao {
     private String horaFim;
 
     private int idSala;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getImagem() {
         return imagem;

@@ -1,12 +1,15 @@
 package com.example.sistemacontrolesala.alocacao;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sistemacontrolesala.R;
@@ -16,11 +19,13 @@ import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class AlocacaoSalasView extends AppCompatActivity {
     List<Alocacao> alocacoesListView = new ArrayList<>();
@@ -66,6 +71,53 @@ public class AlocacaoSalasView extends AppCompatActivity {
                 startActivity(enviadora);
             }
         });
+
+        listAlocacao.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long id) {
+                new AlertDialog.Builder(AlocacaoSalasView.this)
+                        .setIcon(R.drawable.ic_action_delete_alocacao)
+                        .setTitle("Remove Alocacao")
+                        .setMessage("Tem certeza que deseja remover esta alocacao?")
+                        .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                alocacoesListView.remove(position).getId();
+                                adapter.notifyDataSetChanged();
+
+                                String resultAuth = "";
+                                JSONObject reservaAlocacaoJson = new JSONObject();
+                                String idAlocacaoRecuperado ="";
+                                try {
+                                    reservaAlocacaoJson.put("id_reserva", idAlocacaoRecuperado);
+                                    System.out.println("ID ALOCACAO " + idAlocacaoRecuperado);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                                try {
+                                    resultAuth = new CadastroAlocacaoService().execute(idAlocacaoRecuperado).get();
+                                    if (resultAuth.equals("A reserva foi cancelada com sucesso")) {
+                                        Toast.makeText(AlocacaoSalasView.this, "Reserva excluida com sucesso", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    } else {
+                                        Toast.makeText(AlocacaoSalasView.this, "Erro ao exluir reserva", Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        })
+                        .setNegativeButton("NAO", null)
+                        .show();
+
+                return true;
+            }
+        });
     }
 
     @Override
@@ -108,10 +160,6 @@ public class AlocacaoSalasView extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
-    }
-
-    private void deletarReserva(){
-
     }
 
     @Override
