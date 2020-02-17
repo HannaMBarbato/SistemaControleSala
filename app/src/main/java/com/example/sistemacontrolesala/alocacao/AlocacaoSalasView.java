@@ -31,7 +31,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
     List<Alocacao> alocacoesListView = new ArrayList<>();
     String idSalaString;
     private AlocacaoAdapter adapter = new AlocacaoAdapter(alocacoesListView, this);
-
+    Alocacao novaAlocacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,15 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         final MaterialCalendarView calendarView = findViewById(R.id.calendarView);
         calendarView.setDateSelected(CalendarDay.today(), true);
+
+        /*for(int i = 0; i<alocacoesListView.size(); i++){
+            if (calendarView.getSelectedDate().equals(novaAlocacao.getDataInicio())){
+                listPorData.add(i);
+
+                System.out.println("CALENDAR VIEW GET SELECTED DATE " + calendarView);
+                System.out.println("ALOCACAO DA LISTA PERSONALIZADA " + listPorData);
+            }
+        }*/
 
         FloatingActionButton btnCadastroAlocacao = findViewById(R.id.floatingActionButton);
         btnCadastroAlocacao.setOnClickListener(new View.OnClickListener() {
@@ -91,13 +100,9 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
                                 try {
                                     idAlocacaoRecuperado = String.valueOf(alocacoesListView.get(position).getId());
-
-                                    System.out.println("ID ALOCACAO STRING " + idAlocacaoRecuperado);
-
                                     reservaAlocacaoJson.put("id_reserva", idAlocacaoRecuperado);
 
                                     System.out.println("ID ALOCACAO " + idAlocacaoRecuperado);
-
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -153,14 +158,19 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
                         String horaInicio = dataHoraInicio.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
                         String horaFim = dataHoraFim.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
+                        String dataInicio = dataHoraInicio.substring((0), dataHoraInicio.indexOf("T"));
 
-                        Alocacao novaAlocacao = new Alocacao();
+                        System.out.println("DATA INICIO ALOCACAO VIEW " + dataInicio);
+
+                        novaAlocacao = new Alocacao();
 
                         novaAlocacao.setId(id);
                         novaAlocacao.setOrganizador(nomeOrganizador);
                         novaAlocacao.setDescricao(descricao);
                         novaAlocacao.setHoraInicio(horaInicio);
                         novaAlocacao.setHoraFim(horaFim);
+
+                        novaAlocacao.setDataInicio(dataInicio);
 
                         alocacoesListView.add(novaAlocacao);
                     }
