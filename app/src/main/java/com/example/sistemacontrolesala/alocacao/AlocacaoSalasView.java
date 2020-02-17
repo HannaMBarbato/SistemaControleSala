@@ -32,6 +32,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
     String idSalaString;
     private AlocacaoAdapter adapter = new AlocacaoAdapter(alocacoesListView, this);
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +48,8 @@ public class AlocacaoSalasView extends AppCompatActivity {
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt("idSala", Integer.parseInt(idSalaString));
         editor.commit();
+
+        System.out.println("ID SALA ALOCACAO VIEW " + idSalaString);
 
         ListView listAlocacao = findViewById(R.id.alocacaoSalaListView);
         listAlocacao.setAdapter(adapter);
@@ -82,14 +85,17 @@ public class AlocacaoSalasView extends AppCompatActivity {
                         .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                alocacoesListView.remove(position).getId();
-                                adapter.notifyDataSetChanged();
-
                                 String resultAuth = "";
+                                String idAlocacaoRecuperado= "";
                                 JSONObject reservaAlocacaoJson = new JSONObject();
-                                String idAlocacaoRecuperado ="";
+
                                 try {
+                                    idAlocacaoRecuperado = String.valueOf(alocacoesListView.get(position).getId());
+
+                                    System.out.println("ID ALOCACAO STRING " + idAlocacaoRecuperado);
+
                                     reservaAlocacaoJson.put("id_reserva", idAlocacaoRecuperado);
+
                                     System.out.println("ID ALOCACAO " + idAlocacaoRecuperado);
 
                                 } catch (JSONException e) {
@@ -97,10 +103,11 @@ public class AlocacaoSalasView extends AppCompatActivity {
                                 }
 
                                 try {
-                                    resultAuth = new CadastroAlocacaoService().execute(idAlocacaoRecuperado).get();
+                                    resultAuth = new CancelaAlocacaoService().execute(idAlocacaoRecuperado).get();
                                     if (resultAuth.equals("A reserva foi cancelada com sucesso")) {
+                                        alocacoesListView.remove(position);
+                                        adapter.notifyDataSetChanged();
                                         Toast.makeText(AlocacaoSalasView.this, "Reserva excluida com sucesso", Toast.LENGTH_SHORT).show();
-                                        finish();
                                     } else {
                                         Toast.makeText(AlocacaoSalasView.this, "Erro ao exluir reserva", Toast.LENGTH_LONG).show();
                                     }
@@ -137,6 +144,8 @@ public class AlocacaoSalasView extends AppCompatActivity {
                 for (int i = 0; i < arrayAlocacao.length(); i++) {
                     JSONObject objetoAlocacao = arrayAlocacao.getJSONObject(i);
                     if (objetoAlocacao.has("nomeOrganizador") && objetoAlocacao.has("descricao") && objetoAlocacao.has("dataHoraInicio") && objetoAlocacao.has("dataHoraFim")) {
+                        int id = objetoAlocacao.getInt("id");
+
                         String nomeOrganizador = objetoAlocacao.getString("nomeOrganizador");
                         String descricao = objetoAlocacao.getString("descricao");
                         String dataHoraInicio = objetoAlocacao.getString("dataHoraInicio");
@@ -147,6 +156,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
                         Alocacao novaAlocacao = new Alocacao();
 
+                        novaAlocacao.setId(id);
                         novaAlocacao.setOrganizador(nomeOrganizador);
                         novaAlocacao.setDescricao(descricao);
                         novaAlocacao.setHoraInicio(horaInicio);

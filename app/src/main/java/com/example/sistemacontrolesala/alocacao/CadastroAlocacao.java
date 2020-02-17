@@ -56,8 +56,12 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 String descricao = editDescricao.getText().toString();
 
                 SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
+                
                 int idSalaRecuperado = pref.getInt("idSala", 0);
+                System.out.println("ID SALA CADASTRO " + idSalaRecuperado);
+
                 String idUsuarioRecuperado = pref.getString("userId", null);
+                System.out.println("ID USUARIO CADASTRO " + idUsuarioRecuperado);
 
                 JSONObject reservaSalaJson = new JSONObject();
                 try {
