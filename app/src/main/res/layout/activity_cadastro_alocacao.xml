@@ -25,12 +25,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cadastro de Alocacao"
+                android:text="Criar Alocacao"
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="25dp"
                 android:textStyle="bold" />
-
         </androidx.appcompat.widget.Toolbar>
 
         <TextView

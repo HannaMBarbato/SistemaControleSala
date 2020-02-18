@@ -13,7 +13,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.sistemacontrolesala.R;
 
@@ -40,6 +42,12 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
 
         getPrefNomeOrganizador();
         getDataDaActivityAlocacao(dateLong);
+
+        Toolbar toolbar = findViewById(R.id.toolbarActivityAlocacao);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+       // getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         txtHoraInicio = findViewById(R.id.cadastroAlocacaoTxtHoraInicio);
         txtHoraFim = findViewById(R.id.cadastroAlocacaoTxtHoraFim);
@@ -93,6 +101,7 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
             }
         });
     }
+
 
     @Override
     public void onClick(View view) {
@@ -158,9 +167,16 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
         organizador.setText("Organizador: " + pref.getString("userName", null));
     }
 
-    @Override
+    /*@Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+    }*/
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        finish();
+        return true;
     }
 }

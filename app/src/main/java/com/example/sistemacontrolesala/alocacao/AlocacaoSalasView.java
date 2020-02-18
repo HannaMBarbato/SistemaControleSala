@@ -4,11 +4,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +19,7 @@ import com.example.sistemacontrolesala.listaSalas.ListaSalasView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,10 +31,20 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class AlocacaoSalasView extends AppCompatActivity {
-    List<Alocacao> alocacoesListView = new ArrayList<>();
-    String idSalaString;
-    private AlocacaoAdapter adapter = new AlocacaoAdapter(alocacoesListView, this);
-    Alocacao novaAlocacao;
+    private List<Alocacao> alocacoesListView;
+    private String idSalaString;
+    private AlocacaoAdapter adapter;
+    private Alocacao novaAlocacao;
+    private ListView listAlocacao;
+    private MaterialCalendarView calendarView;
+
+    private List<Alocacao> listaPorData;
+
+    public AlocacaoSalasView() {
+        alocacoesListView = new ArrayList<>();
+        listaPorData = new ArrayList<>();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,26 +64,26 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         System.out.println("ID SALA ALOCACAO VIEW " + idSalaString);
 
-        ListView listAlocacao = findViewById(R.id.alocacaoSalaListView);
-        listAlocacao.setAdapter(adapter);
 
-        final MaterialCalendarView calendarView = findViewById(R.id.calendarView);
+        calendarView = findViewById(R.id.calendarView);
         calendarView.setDateSelected(CalendarDay.today(), true);
 
-        /*for(int i = 0; i<alocacoesListView.size(); i++){
-            if (calendarView.getSelectedDate().equals(novaAlocacao.getDataInicio())){
-                listPorData.add(i);
-
-                System.out.println("CALENDAR VIEW GET SELECTED DATE " + calendarView);
-                System.out.println("ALOCACAO DA LISTA PERSONALIZADA " + listPorData);
+        calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
+                if(selected){
+                    getAlocacaoPorDia();
+                }
             }
-        }*/
+        });
+
+        System.out.println("DATA CALENDAR VIIIIIIEW " + calendarView.getSelectedDate());
 
         FloatingActionButton btnCadastroAlocacao = findViewById(R.id.floatingActionButton);
         btnCadastroAlocacao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 String data = dateFormat.format(calendarView.getSelectedDate().getDate());
 
                 Intent enviadora = new Intent(getApplicationContext(), CadastroAlocacao.class);
@@ -83,7 +96,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
                 startActivity(enviadora);
             }
         });
-
+        listAlocacao = findViewById(R.id.alocacaoSalaListView);
         listAlocacao.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, final long id) {
@@ -95,11 +108,11 @@ public class AlocacaoSalasView extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String resultAuth = "";
-                                String idAlocacaoRecuperado= "";
+                                String idAlocacaoRecuperado = "";
                                 JSONObject reservaAlocacaoJson = new JSONObject();
 
                                 try {
-                                    idAlocacaoRecuperado = String.valueOf(alocacoesListView.get(position).getId());
+                                    idAlocacaoRecuperado = String.valueOf(listaPorData.get(position).getId());
                                     reservaAlocacaoJson.put("id_reserva", idAlocacaoRecuperado);
 
                                     System.out.println("ID ALOCACAO " + idAlocacaoRecuperado);
@@ -110,7 +123,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
                                 try {
                                     resultAuth = new CancelaAlocacaoService().execute(idAlocacaoRecuperado).get();
                                     if (resultAuth.equals("A reserva foi cancelada com sucesso")) {
-                                        alocacoesListView.remove(position);
+                                        listaPorData.remove(position);
                                         adapter.notifyDataSetChanged();
                                         Toast.makeText(AlocacaoSalasView.this, "Reserva excluida com sucesso", Toast.LENGTH_SHORT).show();
                                     } else {
@@ -132,19 +145,44 @@ public class AlocacaoSalasView extends AppCompatActivity {
         });
     }
 
+
     @Override
     protected void onResume() {
         getReservas(idSalaString);
-        adapter.notifyDataSetChanged();
+
+        getAlocacaoPorDia();
+
         super.onResume();
     }
+
+    private void getAlocacaoPorDia() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String data = dateFormat.format(calendarView.getSelectedDate().getDate());
+
+        listaPorData.clear();
+
+        System.out.println("DATAAAaAA " + data);
+
+        for (int i = 0; i < alocacoesListView.size(); i++) {
+            Alocacao alocacao = alocacoesListView.get(i);
+            System.out.println("DESCRICAO " + alocacao.getDataInicio());
+            if (alocacao.getDataInicio().equals(data)) {
+                listaPorData.add(alocacao);
+            }
+        }
+        Log.e("TAMANHO DA LISTAAAAA", String.valueOf(alocacoesListView.size()));
+
+        adapter = new AlocacaoAdapter(listaPorData, this);
+        listAlocacao.setAdapter(adapter);
+    }
+
 
     private void getReservas(String idSalaString) {
         try {
             alocacoesListView.clear();
             String listaAlocacaoString = new IdSalaAlocacaoService().execute(idSalaString).get();
             if (listaAlocacaoString.length() > 2) {
-                System.out.println(listaAlocacaoString);
+                System.out.println("OBJETO ALOCACAO " + listaAlocacaoString);
                 JSONArray arrayAlocacao = new JSONArray(listaAlocacaoString);
                 for (int i = 0; i < arrayAlocacao.length(); i++) {
                     JSONObject objetoAlocacao = arrayAlocacao.getJSONObject(i);
@@ -173,6 +211,8 @@ public class AlocacaoSalasView extends AppCompatActivity {
                         novaAlocacao.setDataInicio(dataInicio);
 
                         alocacoesListView.add(novaAlocacao);
+
+                        Log.e("TAMANHO DA LISTAAAAA", String.valueOf(alocacoesListView.size()));
                     }
                 }
             }
