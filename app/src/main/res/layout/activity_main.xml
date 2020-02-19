@@ -9,7 +9,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <ImageView
             android:id="@+id/imgIcon"
@@ -39,7 +41,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imgIcon" />
+            app:layout_constraintTop_toBottomOf="@id/imgIcon"/>
 
         <EditText
             android:id="@+id/editEmailLogin"
@@ -60,7 +62,7 @@
             android:layout_marginTop="30dp"
             android:ems="10"
             android:hint="Senha: "
-            android:inputType="textEmailAddress"
+            android:inputType="textPassword"
             app:layout_constraintEnd_toEndOf="@id/editEmailLogin"
             app:layout_constraintStart_toStartOf="@id/editEmailLogin"
             app:layout_constraintTop_toBottomOf="@id/editEmailLogin" />

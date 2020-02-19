@@ -43,11 +43,10 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
         getPrefNomeOrganizador();
         getDataDaActivityAlocacao(dateLong);
 
-        Toolbar toolbar = findViewById(R.id.toolbarActivityAlocacao);
+        /*Toolbar toolbar = findViewById(R.id.toolbarActivityAlocacao);
         setSupportActionBar(toolbar);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-       // getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
 
         txtHoraInicio = findViewById(R.id.cadastroAlocacaoTxtHoraInicio);
         txtHoraFim = findViewById(R.id.cadastroAlocacaoTxtHoraFim);
@@ -64,7 +63,7 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 String descricao = editDescricao.getText().toString();
 
                 SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
-                
+
                 int idSalaRecuperado = pref.getInt("idSala", 0);
                 System.out.println("ID SALA CADASTRO " + idSalaRecuperado);
 
@@ -100,6 +99,16 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
+
+        Button btnCancelar = findViewById(R.id.cadastroAlocacaoBtnCancelar);
+        btnCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+
     }
 
 
@@ -117,6 +126,10 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     getHora(hourOfDay, minute, calendar, formataHora, txtHoraInicio);
                     dateInicio = calendar.getTime().getTime();
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.setTimeInMillis(dateInicio);
+                    calendar1.add(Calendar.HOUR_OF_DAY, -3);
+                    dateInicio = calendar1.getTimeInMillis();
                     System.out.println("DATA E HORA INICIO LONG " + dateInicio);
                 }
             }, hour, minute, android.text.format.DateFormat.is24HourFormat(context));
@@ -129,6 +142,10 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                 public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                     getHora(hourOfDay, minute, calendar, formataHora, txtHoraFim);
                     dateFim = calendar.getTime().getTime();
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.setTimeInMillis(dateFim);
+                    calendar1.add(Calendar.HOUR_OF_DAY, -3);
+                    dateFim = calendar1.getTimeInMillis();
                     System.out.println("DATA E HORA FIm LONG " + dateFim);
                 }
             }, hour, minute, android.text.format.DateFormat.is24HourFormat(this));
@@ -167,16 +184,16 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
         organizador.setText("Organizador: " + pref.getString("userName", null));
     }
 
-    /*@Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }*/
-
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        //finish();
+    }
+
+  /*  @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
         finish();
         return true;
-    }
+    }*/
 }
