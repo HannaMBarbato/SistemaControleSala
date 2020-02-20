@@ -1,11 +1,15 @@
 package com.example.sistemacontrolesala;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +24,7 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     private Button btnEntrar;
-    private TextView txtCadastrar;
+    private TextView txtTituloMain, txtCadastrar;
     private SharedPreferences pref;
 
     private int idUsuario;
@@ -31,8 +35,10 @@ public class MainActivity extends AppCompatActivity {
     private String tipoOrganizacao;
     private int idOrganizacao;
 
-    private EditText editEmail;
-    private EditText editSenha;
+    private EditText editEmail, editSenha;
+
+    private ProgressBar carregando;
+    private ImageView imgIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
         editSenha = findViewById(R.id.editSenhaLogin);
         btnEntrar = findViewById(R.id.btnEntrar);
         txtCadastrar = findViewById(R.id.txtCadastrarMain);
+
+        carregando = findViewById(R.id.carregando);
+        imgIcon = findViewById(R.id.imgIcon);
+        txtTituloMain = findViewById(R.id.txtTituloMain);
     }
 
     private void configuraComponentesDaTela(final EditText editEmail, final EditText editSenha) {
@@ -76,22 +86,54 @@ public class MainActivity extends AppCompatActivity {
 
     private void validaDadosDoLogin(EditText editEmail, EditText editPassword) {
         String email = editEmail.getText().toString();
-        String password = editPassword.getText().toString();
+        String senha = editPassword.getText().toString();
 
-        if (email.isEmpty()) {
-            editEmail.setError("Digite um email");
-        } else if (password.isEmpty()) {
-            editPassword.setError("Digite uma senha");
+        if (!isNetworkAvailable(this)) {
+            Toast.makeText(MainActivity.this, "Sem conexao com a rede", Toast.LENGTH_LONG).show();
         } else {
-            verificaLogin(email, password);
+            if (email.isEmpty()) {
+                editEmail.setError("Digite um email");
+            } else if (!email.contains("@") && email.contains(".")) {
+                editEmail.setError("Digite um email valido");
+            } else if (senha.isEmpty()) {
+                editPassword.setError("Digite uma senha");
+                //SENHA INVALIDA ?
+            } else {
+                verificaLogin(email, senha);
+            }
         }
     }
 
-    private void verificaLogin(String email, String password) {
+
+    private void verificaLogin(String email, String senha) {
         String resultAuth;
         try {
-            resultAuth = new LoginUsuarioService().execute(email, password).get();
+            btnEntrar.setEnabled(false);
+            carregando.setVisibility(View.VISIBLE);
+            imgIcon.setVisibility(View.GONE);
+            txtTituloMain.setVisibility(View.GONE);
+            editEmail.setVisibility(View.GONE);
+            editSenha.setVisibility(View.GONE);
+            btnEntrar.setVisibility(View.GONE);
+            txtCadastrar.setVisibility(View.GONE);
+
+            resultAuth = new LoginUsuarioService().execute(email, senha).get();
+
             if (resultAuth.length() > 0) {
+
+                if(resultAuth.contains("Senha incorreta")){
+                    Toast.makeText(getApplicationContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
+                    btnEntrar.setEnabled(true);
+                    carregando.setVisibility(View.GONE);
+                    imgIcon.setVisibility(View.VISIBLE);
+                    txtTituloMain.setVisibility(View.VISIBLE);
+                    editEmail.setVisibility(View.VISIBLE);
+                    editSenha.setVisibility(View.VISIBLE);
+                    btnEntrar.setVisibility(View.VISIBLE);
+                    txtCadastrar.setVisibility(View.VISIBLE);
+                    return;
+                }
+
                 Toast.makeText(getApplicationContext(), "Login realizado com sucesso", Toast.LENGTH_SHORT).show();
 
                 JSONObject usuarioJSON = new JSONObject(resultAuth);
@@ -105,6 +147,14 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                 }
             } else {
+                btnEntrar.setEnabled(true);
+                carregando.setVisibility(View.GONE);
+                imgIcon.setVisibility(View.VISIBLE);
+                txtTituloMain.setVisibility(View.VISIBLE);
+                editEmail.setVisibility(View.VISIBLE);
+                editSenha.setVisibility(View.VISIBLE);
+                btnEntrar.setVisibility(View.VISIBLE);
+                txtCadastrar.setVisibility(View.VISIBLE);
                 Toast.makeText(MainActivity.this, "Usuario nao cadastrado", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -135,5 +185,10 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("userTipoOrganizacao", tipoOrganizacao);
         editor.putString("userIdOrganizacao", Integer.toString(idOrganizacao));
         editor.commit();
+    }
+
+    public boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 }

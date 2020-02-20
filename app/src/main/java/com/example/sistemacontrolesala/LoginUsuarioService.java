@@ -10,7 +10,7 @@ import java.net.URL;
 public class LoginUsuarioService extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... strings) {
-        String urlWS = "http://172.30.248.117:8080/ReservaDeSala/rest/usuario/loginV2/";
+        String urlWS = "http://172.30.248.117:8080/ReservaDeSala/rest/usuario/login/";
 
         StringBuilder result = new StringBuilder();
         try {

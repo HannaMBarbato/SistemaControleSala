@@ -1,96 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="30dp"
         android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:focusableInTouchMode="true"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/imgIcon"
             android:layout_width="129dp"
             android:layout_height="93dp"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.076"
-            android:src="@drawable/open_door"/>
+            android:src="@drawable/open_door" />
 
         <TextView
             android:id="@+id/txtTituloMain"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="30dp"
+            android:layout_marginTop="10dp"
             android:gravity="center"
             android:text="Sistema\n de Controle \nde Salas"
             android:textColor="@android:color/black"
-            android:textSize="25dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imgIcon"/>
+            android:textSize="25dp" />
 
         <EditText
             android:id="@+id/editEmailLogin"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:ems="10"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            app:layout_constraintEnd_toEndOf="@id/txtTituloMain"
-            app:layout_constraintStart_toStartOf="@id/txtTituloMain"
-            app:layout_constraintTop_toBottomOf="@id/txtTituloMain" />
+            android:maxLength="45" />
 
         <EditText
             android:id="@+id/editSenhaLogin"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:ems="10"
+            android:layout_marginTop="15dp"
             android:hint="Senha: "
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="@id/editEmailLogin"
-            app:layout_constraintStart_toStartOf="@id/editEmailLogin"
-            app:layout_constraintTop_toBottomOf="@id/editEmailLogin" />
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btnEntrar"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/botao_customizado"
-            android:text="Entrar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editSenhaLogin" />
+            android:text="Entrar" />
 
         <TextView
             android:id="@+id/txtCadastrarMain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
             android:text="Cadastrar"
             android:textColor="@android:color/black"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnEntrar" />
+            android:textSize="20sp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <ProgressBar
+            android:id="@+id/carregando"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/colorButton"
+            android:indeterminateTintMode="src_atop"
+            android:visibility="gone" />
+    </LinearLayout>
 </ScrollView>
