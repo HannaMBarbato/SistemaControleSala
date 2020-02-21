@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +24,15 @@ import com.example.sistemacontrolesala.usuario.CadastroUsuario;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -39,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressBar carregando;
     private ImageView imgIcon;
+
+    boolean verificaNet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,16 +103,16 @@ public class MainActivity extends AppCompatActivity {
         String email = editEmail.getText().toString();
         String senha = editPassword.getText().toString();
 
-        if (!isNetworkAvailable(this)) {
-            Toast.makeText(MainActivity.this, "Sem conexao com a rede", Toast.LENGTH_LONG).show();
-        } else {
+        if (checkConnection(this) == false) {
+            Toast.makeText(MainActivity.this, "Sem conexao com a Internet", Toast.LENGTH_LONG).show();
+        }
+        if (checkConnection(this) == true) {
             if (email.isEmpty()) {
                 editEmail.setError("Digite um email");
             } else if (!email.contains("@") && email.contains(".")) {
                 editEmail.setError("Digite um email valido");
             } else if (senha.isEmpty()) {
                 editPassword.setError("Digite uma senha");
-                //SENHA INVALIDA ?
             } else {
                 verificaLogin(email, senha);
             }
@@ -121,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (resultAuth.length() > 0) {
 
-                if(resultAuth.contains("Senha incorreta")){
+                if (resultAuth.contains("Senha incorreta")) {
                     Toast.makeText(getApplicationContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
                     btnEntrar.setEnabled(true);
                     carregando.setVisibility(View.GONE);
@@ -187,8 +202,62 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    public boolean isNetworkAvailable(Context context) {
+  /*  public boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }*/
+
+    public static boolean checkConnection(Context context) {
+        final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connMgr != null) {
+            NetworkInfo activeNetworkInfo = connMgr.getActiveNetworkInfo();
+            if (activeNetworkInfo != null) { // connected to the internet
+                // connected to the mobile provider's data plan
+                if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                    // connected to wifi
+                    //return activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        return false;
     }
+
+
+    /*public static boolean isNetworkAvailable(Context context) {
+        if (context == null) return false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+                if (capabilities != null) {
+                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                        return true;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                        return true;
+                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                        return true;
+                    }
+                }
+            } else {
+
+                try {
+                    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+                    if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+                        Log.i("update_statut", "Network is available : true");
+                        return true;
+                    }
+                } catch (Exception e) {
+                    Log.i("update_statut", "" + e.getMessage());
+                }
+            }
+        }
+        Log.i("update_statut", "Network is available : FALSE ");
+        return false;
+    }*/
+
 }
