@@ -212,8 +212,7 @@ public class MainActivity extends AppCompatActivity {
         if (connMgr != null) {
             NetworkInfo activeNetworkInfo = connMgr.getActiveNetworkInfo();
             if (activeNetworkInfo != null) { // connected to the internet
-                // connected to the mobile provider's data plan
-                if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE && activeNetworkInfo.isConnected() || activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI && activeNetworkInfo.isConnected() ) {
                     // connected to wifi
                     //return activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
                     return true;
@@ -225,8 +224,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-
-    /*public static boolean isNetworkAvailable(Context context) {
+   /* public static boolean isNetworkAvailable(Context context) {
         if (context == null) return false;
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -260,4 +258,63 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }*/
 
+    /*public boolean isConnected(Context cont) {
+        ConnectivityManager conmag = (ConnectivityManager) cont.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (conmag != null && conmag.getActiveNetworkInfo().isAvailable()
+                && conmag.getActiveNetworkInfo().isConnectedOrConnecting()) {
+            return true;
+            // NetworkInfo activeNetwork = conmag.getActiveNetworkInfo();
+           *//* if (activeNetwork != null && activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.isConnectedOrConnecting()) {
+                return true;
+            }
+            if (activeNetwork != null && activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE && activeNetwork.isConnectedOrConnecting()) {
+                return true;
+            }*//*
+        } else {
+            return false;
+        }
+
+    }*/
+
+
+    /*public static boolean isInternetActiveWithInetAddress() {
+
+        InetAddress inetAddress = null;
+        try {
+            inetAddress = InetAddress.getByName("www.google.com");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        if (inetAddress != null && !inetAddress.toString().equals("")) {
+            return true;
+        }
+
+        return false;
+    }*/
+
+    /*public boolean isOnline(Context context) {
+        boolean state = false;
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiNetwork != null) {
+            state = wifiNetwork.isConnected();
+        }
+        NetworkInfo mobileNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (mobileNetwork != null) {
+            state = mobileNetwork.isConnected();
+
+            System.out.println("mobileNetwork.isAvailable(): " + mobileNetwork.isAvailable());
+            System.out.println("mobileNetwork.isConnected(): " + mobileNetwork.isConnected());
+            System.out.println("mobileNetwork.isFaileOver(): " + mobileNetwork.isFailover());
+            System.out.println("mobileNetwork.isConnectedOrConnecting: " + state);
+
+        }
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) {
+            state = activeNetwork.isConnected();
+        }
+        System.out.println("STATE " + state);
+        return state;
+    }*/
 }
