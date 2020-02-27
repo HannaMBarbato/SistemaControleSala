@@ -22,13 +22,11 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class AlocacaoSalasView extends AppCompatActivity {
     private List<Alocacao> alocacoesListView;
@@ -44,7 +42,6 @@ public class AlocacaoSalasView extends AppCompatActivity {
         alocacoesListView = new ArrayList<>();
         listaPorData = new ArrayList<>();
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +61,13 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         System.out.println("ID SALA ALOCACAO VIEW " + idSalaString);
 
-
         calendarView = findViewById(R.id.calendarView);
         calendarView.setDateSelected(CalendarDay.today(), true);
 
         calendarView.setOnDateChangedListener(new OnDateSelectedListener() {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
-                if(selected){
+                if (selected) {
                     getAlocacaoPorDia();
                 }
             }
@@ -108,50 +104,43 @@ public class AlocacaoSalasView extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 String resultAuth = "";
+
                                 String idAlocacaoRecuperado = "";
-                                JSONObject reservaAlocacaoJson = new JSONObject();
+                                idAlocacaoRecuperado = String.valueOf(listaPorData.get(position).getId());
+                                String nomeUsuarioDaReservaEfetuada = listaPorData.get(position).getOrganizador();
 
-                                try {
-                                    idAlocacaoRecuperado = String.valueOf(listaPorData.get(position).getId());
-                                    reservaAlocacaoJson.put("id_reserva", idAlocacaoRecuperado);
+                                System.out.println("ID ALOCACAO " + idAlocacaoRecuperado);
 
-                                    System.out.println("ID ALOCACAO " + idAlocacaoRecuperado);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
-                                try {
-                                    resultAuth = new CancelaAlocacaoService().execute(idAlocacaoRecuperado).get();
-                                    if (resultAuth.equals("A reserva foi cancelada com sucesso")) {
-                                        listaPorData.remove(position);
-                                        adapter.notifyDataSetChanged();
-                                        Toast.makeText(AlocacaoSalasView.this, "Reserva excluida com sucesso", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(AlocacaoSalasView.this, "Erro ao exluir reserva", Toast.LENGTH_LONG).show();
+                                SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
+                                if(nomeUsuarioDaReservaEfetuada.equals(pref.getString("userName", null))){
+                                    try {
+                                        resultAuth = new CancelaAlocacaoService().execute(idAlocacaoRecuperado).get();
+                                        if (resultAuth.equals("A reserva foi cancelada com sucesso")) {
+                                            listaPorData.remove(position);
+                                            adapter.notifyDataSetChanged();
+                                            Toast.makeText(AlocacaoSalasView.this, "Reserva excluida com sucesso", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(AlocacaoSalasView.this, "Erro ao exluir reserva", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (ExecutionException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                }else{
+                                    Toast.makeText(AlocacaoSalasView.this, "Voce nao tem permicao para excluir esta reserva",Toast.LENGTH_SHORT).show();
                                 }
-
                             }
                         })
                         .setNegativeButton("NAO", null)
                         .show();
-
                 return true;
             }
         });
     }
 
-
     @Override
     protected void onResume() {
         getReservas(idSalaString);
-
         getAlocacaoPorDia();
-
         super.onResume();
     }
 
@@ -175,7 +164,6 @@ public class AlocacaoSalasView extends AppCompatActivity {
         adapter = new AlocacaoAdapter(listaPorData, this);
         listAlocacao.setAdapter(adapter);
     }
-
 
     private void getReservas(String idSalaString) {
         try {
