@@ -107,12 +107,12 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
                                 String idAlocacaoRecuperado = "";
                                 idAlocacaoRecuperado = String.valueOf(listaPorData.get(position).getId());
-                                String nomeUsuarioDaReservaEfetuada = listaPorData.get(position).getOrganizador();
+                                int idUsuarioDaReservaEfetuada = listaPorData.get(position).getIdUsuario();
 
                                 System.out.println("ID ALOCACAO " + idAlocacaoRecuperado);
 
                                 SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
-                                if(nomeUsuarioDaReservaEfetuada.equals(pref.getString("userName", null))){
+                                if(idUsuarioDaReservaEfetuada == Integer.parseInt(pref.getString("userId", null))){
                                     try {
                                         resultAuth = new CancelaAlocacaoService().execute(idAlocacaoRecuperado).get();
                                         if (resultAuth.equals("A reserva foi cancelada com sucesso")) {
@@ -182,6 +182,8 @@ public class AlocacaoSalasView extends AppCompatActivity {
                         String dataHoraInicio = objetoAlocacao.getString("dataHoraInicio");
                         String dataHoraFim = objetoAlocacao.getString("dataHoraFim");
 
+                        int idUsuario = objetoAlocacao.getInt("idUsuario");
+
                         String horaInicio = dataHoraInicio.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
                         String horaFim = dataHoraFim.substring(dataHoraInicio.indexOf("T") + 1, dataHoraInicio.indexOf("Z") - 3);
                         String dataInicio = dataHoraInicio.substring((0), dataHoraInicio.indexOf("T"));
@@ -195,8 +197,8 @@ public class AlocacaoSalasView extends AppCompatActivity {
                         novaAlocacao.setDescricao(descricao);
                         novaAlocacao.setHoraInicio(horaInicio);
                         novaAlocacao.setHoraFim(horaFim);
-
                         novaAlocacao.setDataInicio(dataInicio);
+                        novaAlocacao.setIdUsuario(idUsuario);
 
                         alocacoesListView.add(novaAlocacao);
 

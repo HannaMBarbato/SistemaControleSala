@@ -3,10 +3,10 @@ package com.example.sistemacontrolesala.usuario;
 public class Usuario {
 
     private int id;
-    private int idOrganizacao;
+   /* private int idOrganizacao;
     private String nome;
     private String email;
-    private String senha;
+    private String senha;*/
 
     public int getId() {
         return id;
@@ -16,7 +16,7 @@ public class Usuario {
         this.id = id;
     }
 
-    public int getIdOrganizacao() {
+    /*public int getIdOrganizacao() {
         return idOrganizacao;
     }
 
@@ -46,5 +46,5 @@ public class Usuario {
 
     public void setSenha(String senha) {
         this.senha = senha;
-    }
+    }*/
 }

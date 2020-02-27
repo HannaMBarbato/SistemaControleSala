@@ -10,6 +10,8 @@ public class Alocacao {
     private String horaFim;
     private String dataInicio;
 
+    private int idUsuario;
+
     private int idSala;
 
     public int getId() {
@@ -74,5 +76,13 @@ public class Alocacao {
 
     public void setDataInicio(String dataInicio) {
         this.dataInicio = dataInicio;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 }
