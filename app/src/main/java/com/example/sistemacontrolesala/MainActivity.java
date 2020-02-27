@@ -1,14 +1,8 @@
 package com.example.sistemacontrolesala;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,19 +19,14 @@ import com.example.sistemacontrolesala.usuario.CadastroUsuario;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
-
 public class MainActivity extends AppCompatActivity {
 
     private Button btnEntrar;
     private TextView txtTituloMain, txtCadastrar;
+    private EditText editEmail, editSenha;
+    private ImageView imgIcon;
+    private ProgressBar carregando;
+
     private SharedPreferences pref;
 
     private int idUsuario;
@@ -47,13 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private String nomeOrganizacao;
     private String tipoOrganizacao;
     private int idOrganizacao;
-
-    private EditText editEmail, editSenha;
-
-    private ProgressBar carregando;
-    private ImageView imgIcon;
-
-    boolean verificaNet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,78 +85,68 @@ public class MainActivity extends AppCompatActivity {
         String email = editEmail.getText().toString();
         String senha = editPassword.getText().toString();
 
-        if (checkConnection(this) == false) {
-            Toast.makeText(MainActivity.this, "Sem conexao com a Internet", Toast.LENGTH_LONG).show();
-        }
-        if (checkConnection(this) == true) {
-            if (email.isEmpty()) {
-                editEmail.setError("Digite um email");
-            } else if (!email.contains("@") && email.contains(".")) {
-                editEmail.setError("Digite um email valido");
-            } else if (senha.isEmpty()) {
-                editPassword.setError("Digite uma senha");
-            } else {
-                verificaLogin(email, senha);
-            }
+        if (email.isEmpty()) {
+            editEmail.setError("Digite um email");
+        } else if (!email.contains("@") && email.contains(".")) {
+            editEmail.setError("Digite um email valido");
+        } else if (senha.isEmpty()) {
+            editPassword.setError("Digite uma senha");
+        } else {
+            verificaLogin(email, senha);
         }
     }
-
 
     private void verificaLogin(String email, String senha) {
         String resultAuth;
         try {
-            btnEntrar.setEnabled(false);
-            carregando.setVisibility(View.VISIBLE);
-            imgIcon.setVisibility(View.GONE);
-            txtTituloMain.setVisibility(View.GONE);
-            editEmail.setVisibility(View.GONE);
-            editSenha.setVisibility(View.GONE);
-            btnEntrar.setVisibility(View.GONE);
-            txtCadastrar.setVisibility(View.GONE);
+            componentesGone(false, View.VISIBLE, View.GONE);
 
             resultAuth = new LoginUsuarioService().execute(email, senha).get();
 
-            if (resultAuth.length() > 0) {
+            if (resultAuth.equals("Servidor nao responde")) {
+                Toast.makeText(this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
 
+                componentesGone(true, View.GONE, View.VISIBLE);
+            } else {
                 if (resultAuth.contains("Senha incorreta")) {
                     Toast.makeText(getApplicationContext(), "Senha incorreta", Toast.LENGTH_SHORT).show();
-                    btnEntrar.setEnabled(true);
-                    carregando.setVisibility(View.GONE);
-                    imgIcon.setVisibility(View.VISIBLE);
-                    txtTituloMain.setVisibility(View.VISIBLE);
-                    editEmail.setVisibility(View.VISIBLE);
-                    editSenha.setVisibility(View.VISIBLE);
-                    btnEntrar.setVisibility(View.VISIBLE);
-                    txtCadastrar.setVisibility(View.VISIBLE);
+                    componentesGone(true, View.GONE, View.VISIBLE);
+                    return;
+                }
+
+                if (resultAuth.contains("Usuário não encontrado")) {
+                    componentesGone(true, View.GONE, View.VISIBLE);
+                    Toast.makeText(MainActivity.this, "Usuario nao cadastrado", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 Toast.makeText(getApplicationContext(), "Login realizado com sucesso", Toast.LENGTH_SHORT).show();
 
                 JSONObject usuarioJSON = new JSONObject(resultAuth);
-
                 if (usuarioJSON.has("email") && usuarioJSON.has("id") && usuarioJSON.has("nome") && usuarioJSON.has("idOrganizacao")) {
-
                     retornaDadosDoWebService(usuarioJSON);
                     salvaAtributosDoUsuarioEOrganizacao(idUsuario, nomeUsuario, emailUsuario, nomeOrganizacao, tipoOrganizacao, idOrganizacao);
 
                     startActivity(new Intent(MainActivity.this, ListaSalasView.class));
                     finish();
                 }
-            } else {
-                btnEntrar.setEnabled(true);
-                carregando.setVisibility(View.GONE);
-                imgIcon.setVisibility(View.VISIBLE);
-                txtTituloMain.setVisibility(View.VISIBLE);
-                editEmail.setVisibility(View.VISIBLE);
-                editSenha.setVisibility(View.VISIBLE);
-                btnEntrar.setVisibility(View.VISIBLE);
-                txtCadastrar.setVisibility(View.VISIBLE);
-                Toast.makeText(MainActivity.this, "Usuario nao cadastrado", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
+            componentesGone(true, View.GONE, View.VISIBLE);
         }
+    }
+
+    private void componentesGone(boolean b, int visible, int gone) {
+        btnEntrar.setEnabled(b);
+        carregando.setVisibility(visible);
+        imgIcon.setVisibility(gone);
+        txtTituloMain.setVisibility(gone);
+        editEmail.setVisibility(gone);
+        editSenha.setVisibility(gone);
+        btnEntrar.setVisibility(gone);
+        txtCadastrar.setVisibility(gone);
     }
 
     private void retornaDadosDoWebService(JSONObject usuarioJSON) throws JSONException {
@@ -201,120 +173,4 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("userIdOrganizacao", Integer.toString(idOrganizacao));
         editor.commit();
     }
-
-  /*  public boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
-        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
-    }*/
-
-    public static boolean checkConnection(Context context) {
-        final ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connMgr != null) {
-            NetworkInfo activeNetworkInfo = connMgr.getActiveNetworkInfo();
-            if (activeNetworkInfo != null) { // connected to the internet
-                if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE && activeNetworkInfo.isConnected() || activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI && activeNetworkInfo.isConnected() ) {
-                    // connected to wifi
-                    //return activeNetworkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }
-        return false;
-    }
-
-   /* public static boolean isNetworkAvailable(Context context) {
-        if (context == null) return false;
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager != null) {
-
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-                if (capabilities != null) {
-                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                        return true;
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                        return true;
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                        return true;
-                    }
-                }
-            } else {
-
-                try {
-                    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-                    if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
-                        Log.i("update_statut", "Network is available : true");
-                        return true;
-                    }
-                } catch (Exception e) {
-                    Log.i("update_statut", "" + e.getMessage());
-                }
-            }
-        }
-        Log.i("update_statut", "Network is available : FALSE ");
-        return false;
-    }*/
-
-    /*public boolean isConnected(Context cont) {
-        ConnectivityManager conmag = (ConnectivityManager) cont.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (conmag != null && conmag.getActiveNetworkInfo().isAvailable()
-                && conmag.getActiveNetworkInfo().isConnectedOrConnecting()) {
-            return true;
-            // NetworkInfo activeNetwork = conmag.getActiveNetworkInfo();
-           *//* if (activeNetwork != null && activeNetwork.getType() == ConnectivityManager.TYPE_WIFI && activeNetwork.isConnectedOrConnecting()) {
-                return true;
-            }
-            if (activeNetwork != null && activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE && activeNetwork.isConnectedOrConnecting()) {
-                return true;
-            }*//*
-        } else {
-            return false;
-        }
-
-    }*/
-
-
-    /*public static boolean isInternetActiveWithInetAddress() {
-
-        InetAddress inetAddress = null;
-        try {
-            inetAddress = InetAddress.getByName("www.google.com");
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        if (inetAddress != null && !inetAddress.toString().equals("")) {
-            return true;
-        }
-
-        return false;
-    }*/
-
-    /*public boolean isOnline(Context context) {
-        boolean state = false;
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo wifiNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiNetwork != null) {
-            state = wifiNetwork.isConnected();
-        }
-        NetworkInfo mobileNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (mobileNetwork != null) {
-            state = mobileNetwork.isConnected();
-
-            System.out.println("mobileNetwork.isAvailable(): " + mobileNetwork.isAvailable());
-            System.out.println("mobileNetwork.isConnected(): " + mobileNetwork.isConnected());
-            System.out.println("mobileNetwork.isFaileOver(): " + mobileNetwork.isFailover());
-            System.out.println("mobileNetwork.isConnectedOrConnecting: " + state);
-
-        }
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork != null) {
-            state = activeNetwork.isConnected();
-        }
-        System.out.println("STATE " + state);
-        return state;
-    }*/
 }

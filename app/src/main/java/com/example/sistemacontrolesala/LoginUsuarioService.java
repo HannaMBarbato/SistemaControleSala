@@ -1,6 +1,9 @@
 package com.example.sistemacontrolesala;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -8,6 +11,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class LoginUsuarioService extends AsyncTask<String, Void, String> {
+    ProgressDialog mDialog;
+    Context context;
+
+   /* protected void onPreExecute() {
+        mDialog = ProgressDialog.show(context, "Aguarde", "Processando...", false, false);
+    }*/
+
     @Override
     protected String doInBackground(String... strings) {
         String urlWS = "http://172.30.248.117:8080/ReservaDeSala/rest/usuario/login/";
@@ -28,9 +38,9 @@ public class LoginUsuarioService extends AsyncTask<String, Void, String> {
                 result.append(line);
             }
             rd.close();
-            return result.toString();
         } catch (Exception e) {
             e.printStackTrace();
+            return "Servidor nao responde";
         }
         return result.toString();
     }
