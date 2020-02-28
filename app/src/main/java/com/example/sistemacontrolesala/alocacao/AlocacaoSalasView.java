@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sistemacontrolesala.R;
 import com.example.sistemacontrolesala.listaSalas.ListaSalasView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
@@ -38,6 +42,10 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
     private List<Alocacao> listaPorData;
 
+    private BottomSheetBehavior bottomSheetBehavior;
+    private LinearLayout linearLayoutBSheet;
+    private ToggleButton tbUpDown;
+
     public AlocacaoSalasView() {
         alocacoesListView = new ArrayList<>();
         listaPorData = new ArrayList<>();
@@ -49,6 +57,38 @@ public class AlocacaoSalasView extends AppCompatActivity {
         setContentView(R.layout.activity_alocacao_salas);
 
         setTitle("Alocações");
+
+        linearLayoutBSheet = findViewById(R.id.bottomSheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(linearLayoutBSheet);
+
+        tbUpDown = findViewById(R.id.toggleButton);
+        tbUpDown.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+        });
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(View view, int newState) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    tbUpDown.setChecked(true);
+                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    tbUpDown.setChecked(false);
+                }
+            }
+
+            @Override
+            public void onSlide(View view, float v) {
+
+            }
+        });
+
 
         Intent recebedora = getIntent();
         Bundle parametros = recebedora.getExtras();
@@ -112,7 +152,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
                                 System.out.println("ID ALOCACAO " + idAlocacaoRecuperado);
 
                                 SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
-                                if(idUsuarioDaReservaEfetuada == Integer.parseInt(pref.getString("userId", null))){
+                                if (idUsuarioDaReservaEfetuada == Integer.parseInt(pref.getString("userId", null))) {
                                     try {
                                         resultAuth = new CancelaAlocacaoService().execute(idAlocacaoRecuperado).get();
                                         if (resultAuth.equals("A reserva foi cancelada com sucesso")) {
@@ -125,8 +165,8 @@ public class AlocacaoSalasView extends AppCompatActivity {
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
-                                }else{
-                                    Toast.makeText(AlocacaoSalasView.this, "Voce nao tem permicao para excluir esta reserva",Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(AlocacaoSalasView.this, "Voce nao tem permicao para excluir esta reserva", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         })

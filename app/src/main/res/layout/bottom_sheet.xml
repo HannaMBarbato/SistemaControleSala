@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheet"
+    android:layout_width="match_parent"
+    android:layout_height="360dp"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    app:behavior_peekHeight="?actionBarSize"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@android:color/black"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/up_down"
+            android:text=""
+            android:textOff=""
+            android:textOn="" />
+
+        <!--<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_toEndOf="@id/toggleButton"
+            android:layout_toRightOf="@id/toggleButton"
+            android:text="Alocacoes"
+            android:textColor="@android:color/white"
+            android:textSize="30dp"
+            android:textStyle="bold" />-->
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/alocacaoSalaListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        tools:listitem="@layout/item_alocacao" />
+
+</LinearLayout>
