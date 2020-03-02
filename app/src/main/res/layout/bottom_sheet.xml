@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="360dp"
     android:background="@android:color/white"
+    android:clickable="true"
     android:orientation="vertical"
     app:behavior_peekHeight="?actionBarSize"
     app:layout_behavior="@string/bottom_sheet_behavior">
@@ -26,19 +27,6 @@
             android:text=""
             android:textOff=""
             android:textOn="" />
-
-        <!--<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:layout_centerHorizontal="true"
-            android:layout_toEndOf="@id/toggleButton"
-            android:layout_toRightOf="@id/toggleButton"
-            android:text="Alocacoes"
-            android:textColor="@android:color/white"
-            android:textSize="30dp"
-            android:textStyle="bold" />-->
     </RelativeLayout>
 
     <ListView
