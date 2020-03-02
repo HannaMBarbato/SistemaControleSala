@@ -30,6 +30,12 @@
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
 
+        <!--<androidx.constraintlayout.widget.Guideline
+            android:id="@+id/GuideLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintGuide_percent=".85"/>-->
+
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
             android:id="@+id/calendarView"
             android:layout_width="0dp"
