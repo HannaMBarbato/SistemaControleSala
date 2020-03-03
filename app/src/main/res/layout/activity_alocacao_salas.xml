@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -30,17 +30,13 @@
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
 
-        <!--<androidx.constraintlayout.widget.Guideline
-            android:id="@+id/GuideLine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintGuide_percent=".85"/>-->
-
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
             android:id="@+id/calendarView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:background="@drawable/calendario_customizado"
+            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,12 +44,23 @@
             app:layout_constraintVertical_bias="0.0"
             app:mcv_selectionColor="@color/colorButton"
             app:mcv_showOtherDates="all"
-            app:mcv_tileHeight="35dp">
+            app:mcv_tileHeight="30dp" />
 
-        </com.prolificinteractive.materialcalendarview.MaterialCalendarView>
+        <FrameLayout
+            android:id="@+id/frameLayoutAlocacao"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/calendarView"
+            app:layout_constraintVertical_bias="0.0">
+
+            <include layout="@layout/bottom_sheet_layout" />
+        </FrameLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <include layout="@layout/bottom_sheet" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -75,4 +82,4 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintVertical_bias="1.0" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

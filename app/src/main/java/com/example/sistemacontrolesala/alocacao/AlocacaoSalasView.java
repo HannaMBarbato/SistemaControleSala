@@ -3,13 +3,11 @@ package com.example.sistemacontrolesala.alocacao;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -17,17 +15,14 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.solver.widgets.Guideline;
 
 import com.example.sistemacontrolesala.R;
 import com.example.sistemacontrolesala.listaSalas.ListaSalasView;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.CalendarMode;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
-import com.prolificinteractive.materialcalendarview.WeekView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,11 +38,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
     private Alocacao novaAlocacao;
     private ListView listAlocacao;
     private MaterialCalendarView calendarView;
-
     private List<Alocacao> listaPorData;
-
-    private BottomSheetBehavior bottomSheetBehavior;
-    private LinearLayout linearLayoutBSheet;
     private ToggleButton tbUpDown;
 
     public AlocacaoSalasView() {
@@ -62,39 +53,19 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         setTitle("Alocações");
 
-        linearLayoutBSheet = findViewById(R.id.bottomSheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(linearLayoutBSheet);
         calendarView = findViewById(R.id.calendarView);
+        tbUpDown = findViewById(R.id.toggleButton);
+
         calendarView.setDateSelected(CalendarDay.today(), true);
 
-        tbUpDown = findViewById(R.id.toggleButton);
         tbUpDown.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     calendarView.state().edit().setCalendarDisplayMode(CalendarMode.WEEKS).commit();
-                    bottomSheetBehavior.setPeekHeight(calendarView.getMeasuredHeight());
                 } else {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     calendarView.state().edit().setCalendarDisplayMode(CalendarMode.MONTHS).commit();
-                    bottomSheetBehavior.setPeekHeight(calendarView.getMeasuredHeight());
                 }
-            }
-        });
-
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(View view, int newState) {
-                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    tbUpDown.setChecked(true);
-                } else if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    tbUpDown.setChecked(false);
-                }
-            }
-            @Override
-            public void onSlide(View view, float v) {
-
             }
         });
 
