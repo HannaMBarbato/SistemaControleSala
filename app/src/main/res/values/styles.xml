@@ -10,9 +10,17 @@
         <item name="colorControlNormal">@color/colorAccent</item>
     </style>
 
-<!--    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="temaData" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorButton</item>
+    </style>
+
+    <!--<style name="CustomTextAppearance" parent="TextAppearance.MaterialCalendarWidget.Date">
+        <item name="android:textColor">@color/corBranco</item>
     </style>-->
+
+    <!--    <style name="AppTheme.NoActionBar">
+            <item name="windowActionBar">false</item>
+            <item name="windowNoTitle">true</item>
+        </style>-->
 
 </resources>

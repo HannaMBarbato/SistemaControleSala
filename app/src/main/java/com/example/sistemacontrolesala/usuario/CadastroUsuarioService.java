@@ -32,7 +32,7 @@ public class CadastroUsuarioService extends AsyncTask<String, Void, String> {
             return result.toString();
         } catch (Exception e) {
             e.printStackTrace();
+            return "Servidor nao responde";
         }
-        return result.toString();
     }
 }

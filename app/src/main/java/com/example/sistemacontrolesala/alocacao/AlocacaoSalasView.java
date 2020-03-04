@@ -15,6 +15,7 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.example.sistemacontrolesala.R;
 import com.example.sistemacontrolesala.listaSalas.ListaSalasView;
@@ -29,6 +30,8 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 public class AlocacaoSalasView extends AppCompatActivity {
@@ -40,6 +43,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
     private MaterialCalendarView calendarView;
     private List<Alocacao> listaPorData;
     private ToggleButton tbUpDown;
+    private Collection<CalendarDay> listaDeDiasComReservas = new ArrayList<>();
 
     public AlocacaoSalasView() {
         alocacoesListView = new ArrayList<>();
@@ -57,6 +61,9 @@ public class AlocacaoSalasView extends AppCompatActivity {
         tbUpDown = findViewById(R.id.toggleButton);
 
         calendarView.setDateSelected(CalendarDay.today(), true);
+        //calendarView.setDateTextAppearance(R.style.CustomTextAppearance);
+       // calendarView.setDateTextAppearance(R.drawable.color);
+
 
         tbUpDown.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -84,6 +91,12 @@ public class AlocacaoSalasView extends AppCompatActivity {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 if (selected) {
+//                    if(!calendarView.getSelectedDate().equals("")){
+//
+//                        calendarView.addDecorator(new DateDecorate(getApplicationContext(), ContextCompat.getColor(getApplicationContext(), R.color.colorAccent), listaDeDiasComReservas));
+//                    }else{
+//                        calendarView.addDecorator(new DateDecorate(getApplicationContext(), ContextCompat.getColor(getApplicationContext(), R.color.colorButton), listaDeDiasComReservas));
+//                    }
                     getAlocacaoPorDia();
                 }
             }
@@ -217,10 +230,13 @@ public class AlocacaoSalasView extends AppCompatActivity {
                         novaAlocacao.setIdUsuario(idUsuario);
 
                         alocacoesListView.add(novaAlocacao);
+                        Date dataComReserva = new SimpleDateFormat("yyyy-MM-dd").parse(dataInicio);
+                        listaDeDiasComReservas.add(new CalendarDay(dataComReserva));
 
                         Log.e("TAMANHO DA LISTAAAAA", String.valueOf(alocacoesListView.size()));
                     }
                 }
+                calendarView.addDecorator(new DateDecorate(getApplicationContext(), ContextCompat.getColor(getApplicationContext(), R.color.colorButton), listaDeDiasComReservas));
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package com.example.sistemacontrolesala.usuario;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Base64;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.sistemacontrolesala.FiltroDesativaEmoji;
 import com.example.sistemacontrolesala.MainActivity;
 import com.example.sistemacontrolesala.R;
 import com.example.sistemacontrolesala.organizacao.Organizacao;
@@ -172,6 +174,14 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
         editEmail = findViewById(R.id.editEmailCadastro);
         editSenha = findViewById(R.id.editSenhaCadastro);
         btnCadastroUsuario = findViewById(R.id.btnCadastrarUsuario);
+
+        desabilitaEmojiDoTeclado();
+    }
+
+    private void desabilitaEmojiDoTeclado() {
+        editNome.setFilters(new InputFilter[]{new FiltroDesativaEmoji()});
+        editEmail.setFilters(new InputFilter[]{new FiltroDesativaEmoji()});
+        editSenha.setFilters(new InputFilter[]{new FiltroDesativaEmoji()});
     }
 
     @Override

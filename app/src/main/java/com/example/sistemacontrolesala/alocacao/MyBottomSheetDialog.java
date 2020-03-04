@@ -1,4 +1,4 @@
-package com.example.sistemacontrolesala.usuario;
+package com.example.sistemacontrolesala.alocacao;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
