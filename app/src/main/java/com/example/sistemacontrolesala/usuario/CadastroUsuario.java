@@ -25,9 +25,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-public class CadastroUsuario extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class CadastroUsuario extends AppCompatActivity  {
 
     private EditText editNome, editEmail, editSenha;
     private Button btnCadastroUsuario;
@@ -41,12 +40,14 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
         setContentView(R.layout.activity_cadastro_usuario);
 
         inicializaComponentesDaTela();
-        configuraSpinner();
+
+        btnCadastroUsuario.setEnabled(false);
+        btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado_enable);
 
         btnCadastroUsuario.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                verificaDadosDeCadastroUsuario();
+                verificaDadosDeCadastroUsuario(editNome, editEmail, editSenha);
             }
         });
 
@@ -60,44 +61,49 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
                         if (emailCompleto.length > 1) {
                             String dominio = emailCompleto[1];
                             if (dominio.contains(".")) {
+                                String listaOrganizacao;
                                 try {
-                                    String listaOrganizacao = new IdOrganizacaoParaCadastroUsuarioService().execute(dominio).get();
-                                    System.out.println("dominio: " + dominio);
-                                    System.out.println("empresa " + listaOrganizacao);
-
-                                    JSONArray arrayOrganizacoes = new JSONArray(listaOrganizacao);
-
-                                    List<String> listaDeStrings = new ArrayList<>();
-                                    if (arrayOrganizacoes.length() > 0) {
-                                        for (int i = 0; i < arrayOrganizacoes.length(); i++) {
-                                            JSONObject objetoOrganizacao = arrayOrganizacoes.getJSONObject(i);
-                                            if (objetoOrganizacao.has("id") && objetoOrganizacao.has("nome") && objetoOrganizacao.has("tipoOrganizacao")) {
-                                                int id = objetoOrganizacao.getInt("id");
-                                                String nome = objetoOrganizacao.getString("nome");
-                                                String tipoOrganizacao = objetoOrganizacao.getString("tipoOrganizacao");
-
-                                                Organizacao novaOrganizacao = new Organizacao();
-                                                novaOrganizacao.setId(id);
-                                                novaOrganizacao.setNome(nome);
-                                                novaOrganizacao.setTipoOrganizacao(tipoOrganizacao);
-
-                                                listOrganizacao.add(novaOrganizacao);
-                                                listaDeStrings.add(novaOrganizacao.getNome());
-                                            }
-                                        }
-                                        ArrayAdapter<String> adapter = new ArrayAdapter<>(CadastroUsuario.this, android.R.layout.simple_spinner_item, listaDeStrings);
-                                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                        spinner.setAdapter(adapter);
-                                        spinner.setVisibility(View.VISIBLE);
+                                    listaOrganizacao = new IdOrganizacaoParaCadastroUsuarioService().execute(dominio).get();
+                                    if (listaOrganizacao.equals("Servidor nao responde")) {
+                                        Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        //nada
+
+                                        System.out.println("dominio: " + dominio);
+                                        System.out.println("empresa " + listaOrganizacao);
+
+                                        JSONArray arrayOrganizacoes = new JSONArray(listaOrganizacao);
+
+                                        List<String> listaDeStrings = new ArrayList<>();
+                                        if (arrayOrganizacoes.length() > 0) {
+                                            for (int i = 0; i < arrayOrganizacoes.length(); i++) {
+                                                JSONObject objetoOrganizacao = arrayOrganizacoes.getJSONObject(i);
+                                                if (objetoOrganizacao.has("id") && objetoOrganizacao.has("nome") && objetoOrganizacao.has("tipoOrganizacao")) {
+                                                    int id = objetoOrganizacao.getInt("id");
+                                                    String nome = objetoOrganizacao.getString("nome");
+                                                    String tipoOrganizacao = objetoOrganizacao.getString("tipoOrganizacao");
+
+                                                    Organizacao novaOrganizacao = new Organizacao();
+                                                    novaOrganizacao.setId(id);
+                                                    novaOrganizacao.setNome(nome);
+                                                    novaOrganizacao.setTipoOrganizacao(tipoOrganizacao);
+
+                                                    listOrganizacao.add(novaOrganizacao);
+                                                    listaDeStrings.add(novaOrganizacao.getNome());
+                                                }
+                                            }
+                                            ArrayAdapter<String> adapter = new ArrayAdapter<>(CadastroUsuario.this, android.R.layout.simple_spinner_item, listaDeStrings);
+                                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                            spinner.setAdapter(adapter);
+                                            spinner.setVisibility(View.VISIBLE);
+
+                                        } else {
+                                            Toast.makeText(CadastroUsuario.this, "Nao existe empresas com o dominio do seu email", Toast.LENGTH_LONG).show();
+                                            editEmail.setError("Digite um email valido");
+                                        }
                                     }
-                                } catch (ExecutionException e) {
+                                } catch (Exception e) {
                                     e.printStackTrace();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }
@@ -105,22 +111,26 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
                 }
             }
         });
+
+        configuraSpinner();
     }
 
-    private void verificaDadosDeCadastroUsuario() {
+    private void verificaDadosDeCadastroUsuario(EditText editNome, EditText editEmail, EditText editSenha) {
         String nome = editNome.getText().toString();
         String email = editEmail.getText().toString();
         String senha = editSenha.getText().toString();
 
-        if(nome.isEmpty()){
+        if (nome.isEmpty()) {
             editNome.setError("Digite um nome");
-        }else if (email.isEmpty()) {
+        } else if (email.isEmpty()) {
             editEmail.setError("Digite um email");
-        } else if (!email.contains("@") && email.contains(".")) {
+        } else if (!email.contains("@") || !email.contains(".")) {
             editEmail.setError("Digite um email valido");
         } else if (senha.isEmpty()) {
             editSenha.setError("Digite uma senha");
         } else {
+            btnCadastroUsuario.setEnabled(true);
+            btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado);
             cadastraUsuario(nome, email, senha);
         }
     }
@@ -143,14 +153,21 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
             String novoUsuarioEncoded = Base64.encodeToString(usuarioJson.toString().getBytes("UTF-8"), Base64.NO_WRAP);
 
             resultAuth = new CadastroUsuarioService().execute(novoUsuarioEncoded).get();
-            if (resultAuth.equals("Usuário criado com sucesso")) {
-                Toast.makeText(CadastroUsuario.this, "Cadastro efetuado com sucesso", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(CadastroUsuario.this, MainActivity.class));
-                finish();
+
+            if (resultAuth.equals("Servidor nao responde")) {
+                Toast.makeText(this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(CadastroUsuario.this, "Erro ao cadastrar usuario", Toast.LENGTH_LONG).show();
+                if (resultAuth.equals("Usuário criado com sucesso")) {
+                    btnCadastroUsuario.setEnabled(false);
+                    Toast.makeText(CadastroUsuario.this, "Cadastro efetuado com sucesso", Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(CadastroUsuario.this, MainActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(CadastroUsuario.this, "Erro ao cadastrar usuario", Toast.LENGTH_LONG).show();
+                }
             }
         } catch (Exception e) {
+            Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT);
             e.printStackTrace();
         }
     }
@@ -191,11 +208,4 @@ public class CadastroUsuario extends AppCompatActivity implements AdapterView.On
         finish();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-    }
 }

@@ -62,7 +62,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         calendarView.setDateSelected(CalendarDay.today(), true);
         //calendarView.setDateTextAppearance(R.style.CustomTextAppearance);
-       // calendarView.setDateTextAppearance(R.drawable.color);
+        // calendarView.setDateTextAppearance(R.drawable.color);
 
 
         tbUpDown.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -91,14 +91,10 @@ public class AlocacaoSalasView extends AppCompatActivity {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 if (selected) {
-//                    if(!calendarView.getSelectedDate().equals("")){
-//
-//                        calendarView.addDecorator(new DateDecorate(getApplicationContext(), ContextCompat.getColor(getApplicationContext(), R.color.colorAccent), listaDeDiasComReservas));
-//                    }else{
-//                        calendarView.addDecorator(new DateDecorate(getApplicationContext(), ContextCompat.getColor(getApplicationContext(), R.color.colorButton), listaDeDiasComReservas));
-//                    }
+                   // calendarView.addDecorator(new DateDecorate(getApplicationContext(), ContextCompat.getColor(getApplicationContext(), R.color.corBranco), calendarView.getSelectedDates()));
                     getAlocacaoPorDia();
                 }
+
             }
         });
 

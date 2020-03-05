@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (email.isEmpty()) {
             editEmail.setError("Digite um email");
-        } else if (!email.contains("@") && email.contains(".")) {
+        } else if (!email.contains("@") || !email.contains(".")) {
             editEmail.setError("Digite um email valido");
         } else if (senha.isEmpty()) {
             editPassword.setError("Digite uma senha");
