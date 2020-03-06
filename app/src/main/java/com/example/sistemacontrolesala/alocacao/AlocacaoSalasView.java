@@ -61,9 +61,6 @@ public class AlocacaoSalasView extends AppCompatActivity {
         tbUpDown = findViewById(R.id.toggleButton);
 
         calendarView.setDateSelected(CalendarDay.today(), true);
-        //calendarView.setDateTextAppearance(R.style.CustomTextAppearance);
-        // calendarView.setDateTextAppearance(R.drawable.color);
-
 
         tbUpDown.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
