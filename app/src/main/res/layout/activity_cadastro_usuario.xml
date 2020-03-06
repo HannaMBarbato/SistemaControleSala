@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:hint="Nome: "
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:maxLength="45"/>
 
         <EditText
             android:id="@+id/editEmailCadastro"

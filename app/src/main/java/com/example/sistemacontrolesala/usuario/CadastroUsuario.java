@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CadastroUsuario extends AppCompatActivity  {
+public class CadastroUsuario extends AppCompatActivity {
 
     private EditText editNome, editEmail, editSenha;
     private Button btnCadastroUsuario;
@@ -75,7 +75,7 @@ public class CadastroUsuario extends AppCompatActivity  {
 
                                         JSONArray arrayOrganizacoes = new JSONArray(listaOrganizacao);
 
-                                       // List<String> listaDeStrings = new ArrayList<>();
+                                        listOrganizacao.clear();
                                         if (arrayOrganizacoes.length() > 0) {
                                             for (int i = 0; i < arrayOrganizacoes.length(); i++) {
                                                 JSONObject objetoOrganizacao = arrayOrganizacoes.getJSONObject(i);
@@ -90,28 +90,13 @@ public class CadastroUsuario extends AppCompatActivity  {
                                                     novaOrganizacao.setTipoOrganizacao(tipoOrganizacao);
 
                                                     listOrganizacao.add(novaOrganizacao);
-                                                  //  listaDeStrings.add(novaOrganizacao.getNome());
                                                 }
                                             }
 
-                                            nomesOrganizacoes.clear();
-                                            nomesOrganizacoes.add("- Selecione uma organização -");
-                                            if (nomesOrganizacoes.size() > 0) {
-                                                for (int i = 0; i < listOrganizacao.size(); i++) {
-                                                    nomesOrganizacoes.add(listOrganizacao.get(i).getNome());
-                                                }
-                                            }
-
-                                            ArrayAdapter<String> adapter = new ArrayAdapter<>(CadastroUsuario.this, android.R.layout.simple_spinner_item, nomesOrganizacoes);
-                                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                            spinner.setAdapter(adapter);
-                                            spinner.setVisibility(View.VISIBLE);
-
+                                            listaDeOrganizacoesNoSpinner();
+                                            configuraAdapterDoSpinner();
                                         } else {
-                                            Toast.makeText(CadastroUsuario.this, "Nao existe empresas com o dominio do seu email", Toast.LENGTH_LONG).show();
-                                            editEmail.setError("Digite um email valido");
-                                            btnCadastroUsuario.setEnabled(false);
-                                            btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado_enable);
+                                            acaoParaDominioDoEmailErrado();
                                         }
                                     }
                                 } catch (Exception e) {
@@ -121,11 +106,41 @@ public class CadastroUsuario extends AppCompatActivity  {
                             }
                         }
                     }
+                    configuraSpinner();
+                } else {
+                    btnCadastroUsuario.setEnabled(false);
+                    btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado_enable);
+                    spinner.setVisibility(View.GONE);
                 }
             }
         });
 
-        configuraSpinner();
+
+    }
+
+    private void listaDeOrganizacoesNoSpinner() {
+        nomesOrganizacoes.clear();
+        nomesOrganizacoes.add("- Selecione uma organização -");
+        if (nomesOrganizacoes.size() > 0) {
+            for (int i = 0; i < listOrganizacao.size(); i++) {
+                nomesOrganizacoes.add(listOrganizacao.get(i).getNome());
+            }
+        }
+    }
+
+    private void configuraAdapterDoSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(CadastroUsuario.this, android.R.layout.simple_spinner_item, nomesOrganizacoes);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setVisibility(View.VISIBLE);
+    }
+
+    private void acaoParaDominioDoEmailErrado() {
+        Toast.makeText(CadastroUsuario.this, "Nao existe empresas com o dominio do seu email", Toast.LENGTH_LONG).show();
+        editEmail.setError("Digite um email valido");
+        btnCadastroUsuario.setEnabled(false);
+        btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado_enable);
+        spinner.setVisibility(View.GONE);
     }
 
     private void verificaDadosDeCadastroUsuario(EditText editNome, EditText editEmail, EditText editSenha) {
@@ -144,6 +159,8 @@ public class CadastroUsuario extends AppCompatActivity  {
         } else {
             cadastraUsuario(nome, email, senha);
         }
+
+
     }
 
     private void cadastraUsuario(String nome, String email, String senha) {
@@ -192,12 +209,10 @@ public class CadastroUsuario extends AppCompatActivity  {
                     btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado_enable);
                 }
                 if (position > 0) {
-                    listOrganizacao.clear();
                     idOrganizacao = listOrganizacao.get(position - 1).getId();
                     btnCadastroUsuario.setEnabled(true);
                     btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado);
                 }
-               // idOrganizacao = listOrganizacao.get(position).getId();
             }
 
             @Override
