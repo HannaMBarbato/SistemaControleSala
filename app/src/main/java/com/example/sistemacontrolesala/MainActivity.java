@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
                 JSONObject usuarioJSON = new JSONObject(resultAuth);
                 if (usuarioJSON.has("email") && usuarioJSON.has("id") && usuarioJSON.has("nome") && usuarioJSON.has("idOrganizacao")) {
-                    retornaDadosDoWebService(usuarioJSON);
+                    pegaDadosDoWebService(usuarioJSON);
                     salvaAtributosDoUsuarioEOrganizacao(idUsuario, nomeUsuario, emailUsuario, nomeOrganizacao, tipoOrganizacao, idOrganizacao);
 
                     startActivity(new Intent(MainActivity.this, ListaSalasView.class));
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         txtCadastrar.setVisibility(gone);
     }
 
-    private void retornaDadosDoWebService(JSONObject usuarioJSON) throws JSONException {
+    private void pegaDadosDoWebService(JSONObject usuarioJSON) throws JSONException {
         idUsuario = usuarioJSON.getInt("id");
         nomeUsuario = usuarioJSON.getString("nome");
         emailUsuario = usuarioJSON.getString("email");

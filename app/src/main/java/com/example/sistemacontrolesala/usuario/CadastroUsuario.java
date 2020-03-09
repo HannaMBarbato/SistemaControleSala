@@ -42,17 +42,18 @@ public class CadastroUsuario extends AppCompatActivity {
         setContentView(R.layout.activity_cadastro_usuario);
 
         inicializaComponentesDaTela();
+        setVisibilidadeBtnCadastrarUsuarioESpinner();
+        configuraBtnCadastrarUsuario();
+        configuraFocoDoEditEmail();
+    }
 
+    private void setVisibilidadeBtnCadastrarUsuarioESpinner() {
         btnCadastroUsuario.setEnabled(false);
         btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado_enable);
+        spinner.setVisibility(View.GONE);
+    }
 
-        btnCadastroUsuario.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                verificaDadosDeCadastroUsuario(editNome, editEmail, editSenha);
-            }
-        });
-
+    private void configuraFocoDoEditEmail() {
         editEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -63,37 +64,18 @@ public class CadastroUsuario extends AppCompatActivity {
                         if (emailCompleto.length > 1) {
                             String dominio = emailCompleto[1];
                             if (dominio.contains(".")) {
-                                String listaOrganizacao;
                                 try {
+                                    String listaOrganizacao;
                                     listaOrganizacao = new IdOrganizacaoParaCadastroUsuarioService().execute(dominio).get();
                                     if (listaOrganizacao.equals("Servidor nao responde")) {
                                         Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
                                     } else {
-
-                                        System.out.println("dominio: " + dominio);
-                                        System.out.println("empresa " + listaOrganizacao);
-
                                         JSONArray arrayOrganizacoes = new JSONArray(listaOrganizacao);
 
                                         listOrganizacao.clear();
                                         if (arrayOrganizacoes.length() > 0) {
-                                            for (int i = 0; i < arrayOrganizacoes.length(); i++) {
-                                                JSONObject objetoOrganizacao = arrayOrganizacoes.getJSONObject(i);
-                                                if (objetoOrganizacao.has("id") && objetoOrganizacao.has("nome") && objetoOrganizacao.has("tipoOrganizacao")) {
-                                                    int id = objetoOrganizacao.getInt("id");
-                                                    String nome = objetoOrganizacao.getString("nome");
-                                                    String tipoOrganizacao = objetoOrganizacao.getString("tipoOrganizacao");
-
-                                                    Organizacao novaOrganizacao = new Organizacao();
-                                                    novaOrganizacao.setId(id);
-                                                    novaOrganizacao.setNome(nome);
-                                                    novaOrganizacao.setTipoOrganizacao(tipoOrganizacao);
-
-                                                    listOrganizacao.add(novaOrganizacao);
-                                                }
-                                            }
-
-                                            listaDeOrganizacoesNoSpinner();
+                                            converteJsonParaAddOrganizacaoNaLista(arrayOrganizacoes);
+                                            listaDeOrganizacoesParaSpinner();
                                             configuraAdapterDoSpinner();
                                         } else {
                                             acaoParaDominioDoEmailErrado();
@@ -108,17 +90,126 @@ public class CadastroUsuario extends AppCompatActivity {
                     }
                     configuraSpinner();
                 } else {
-                    btnCadastroUsuario.setEnabled(false);
-                    btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado_enable);
-                    spinner.setVisibility(View.GONE);
+                    setVisibilidadeBtnCadastrarUsuarioESpinner();
                 }
             }
         });
-
-
     }
 
-    private void listaDeOrganizacoesNoSpinner() {
+    private void converteJsonParaAddOrganizacaoNaLista(JSONArray arrayOrganizacoes) throws JSONException {
+        for (int i = 0; i < arrayOrganizacoes.length(); i++) {
+            JSONObject object = arrayOrganizacoes.getJSONObject(i);
+            Organizacao organizacao = pegaInformacoesOrganizacao(object);
+            listOrganizacao.add(organizacao);
+        }
+    }
+
+    private Organizacao pegaInformacoesOrganizacao(JSONObject objetoOrganizacao) throws JSONException {
+        try
+        {
+            int id = 0;
+            String nome = "";
+            String tipoOrganizacao = "";
+            if (objetoOrganizacao.has("id") && objetoOrganizacao.has("nome") && objetoOrganizacao.has("tipoOrganizacao")) {
+                id = objetoOrganizacao.getInt("id");
+                nome = objetoOrganizacao.getString("nome");
+                tipoOrganizacao = objetoOrganizacao.getString("tipoOrganizacao");
+            }
+            return criarOrganizacao(id, nome, tipoOrganizacao);
+        }
+        catch (Exception e)
+        {
+            Toast.makeText(CadastroUsuario.this, "", Toast.LENGTH_SHORT);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Organizacao criarOrganizacao(int id, String nome, String tipoOrganizacao) {
+        Organizacao novaOrganizacao = new Organizacao();
+        novaOrganizacao.setId(id);
+        novaOrganizacao.setNome(nome);
+        novaOrganizacao.setTipoOrganizacao(tipoOrganizacao);
+        return novaOrganizacao;
+    }
+
+    private void configuraBtnCadastrarUsuario() {
+        btnCadastroUsuario.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verificaDadosDeCadastroUsuario(editNome, editEmail, editSenha);
+            }
+        });
+    }
+
+    private void verificaDadosDeCadastroUsuario(EditText editNome, EditText editEmail, EditText editSenha) {
+        String nome = editNome.getText().toString();
+        String email = editEmail.getText().toString();
+        String senha = editSenha.getText().toString();
+
+        if (nome.isEmpty()) {
+            editNome.setError("Digite um nome");
+        } else if (email.isEmpty()) {
+            editEmail.setError("Digite um email");
+        } else if (!email.contains("@") || !email.contains(".") || email.contains(" ")) {
+            editEmail.setError("Digite um email valido");
+        } else if (senha.isEmpty()) {
+            editSenha.setError("Digite uma senha");
+        } else {
+            cadastraUsuario(nome, email, senha);
+        }
+    }
+
+    private void cadastraUsuario(String nome, String email, String senha) {
+        String resultAuth;
+        JSONObject usuarioJson = retornaUsuarioEmJsonObject(nome, email, senha);
+
+        try {
+            String novoUsuarioEncoded = Base64.encodeToString(usuarioJson.toString().getBytes("UTF-8"), Base64.NO_WRAP);
+
+            resultAuth = new CadastroUsuarioService().execute(novoUsuarioEncoded).get();
+            tratarRespostaDoServidor(resultAuth);
+        } catch (Exception e) {
+            Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT);
+            e.printStackTrace();
+        }
+    }
+
+    private JSONObject retornaUsuarioEmJsonObject(String nome, String email, String senha) {
+        JSONObject usuarioJson = new JSONObject();
+
+        try {
+            usuarioJson.put("nome", nome);
+            usuarioJson.put("email", email);
+            usuarioJson.put("senha", senha);
+            usuarioJson.put("idOrganizacao", idOrganizacao);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(CadastroUsuario.this, "Erro ao cadastrar dados do usuario", Toast.LENGTH_LONG).show();
+        }
+        return usuarioJson;
+    }
+
+    private void tratarRespostaDoServidor(String resultAuth) {
+        if (resultAuth.equals("Servidor nao responde")) {
+            Toast.makeText(this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
+        } else {
+            if (resultAuth.equals("Usuário criado com sucesso")) {
+                acaoParaCadastroEfetuadoComSucesso();
+            } else {
+                Toast.makeText(CadastroUsuario.this, "Erro ao cadastrar usuario", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private void acaoParaCadastroEfetuadoComSucesso() {
+        btnCadastroUsuario.setEnabled(false);
+        Toast.makeText(CadastroUsuario.this, "Cadastro efetuado com sucesso", Toast.LENGTH_LONG).show();
+        startActivity(new Intent(CadastroUsuario.this, MainActivity.class));
+        finish();
+    }
+
+    private void listaDeOrganizacoesParaSpinner() {
         nomesOrganizacoes.clear();
         nomesOrganizacoes.add("- Selecione uma organização -");
         if (nomesOrganizacoes.size() > 0) {
@@ -138,67 +229,9 @@ public class CadastroUsuario extends AppCompatActivity {
     private void acaoParaDominioDoEmailErrado() {
         Toast.makeText(CadastroUsuario.this, "Nao existe empresas com o dominio do seu email", Toast.LENGTH_LONG).show();
         editEmail.setError("Digite um email valido");
-        btnCadastroUsuario.setEnabled(false);
-        btnCadastroUsuario.setBackgroundResource(R.drawable.botao_customizado_enable);
-        spinner.setVisibility(View.GONE);
+        setVisibilidadeBtnCadastrarUsuarioESpinner();
     }
 
-    private void verificaDadosDeCadastroUsuario(EditText editNome, EditText editEmail, EditText editSenha) {
-        String nome = editNome.getText().toString();
-        String email = editEmail.getText().toString();
-        String senha = editSenha.getText().toString();
-
-        if (nome.isEmpty()) {
-            editNome.setError("Digite um nome");
-        } else if (email.isEmpty()) {
-            editEmail.setError("Digite um email");
-        } else if (!email.contains("@") || !email.contains(".")) {
-            editEmail.setError("Digite um email valido");
-        } else if (senha.isEmpty()) {
-            editSenha.setError("Digite uma senha");
-        } else {
-            cadastraUsuario(nome, email, senha);
-        }
-
-
-    }
-
-    private void cadastraUsuario(String nome, String email, String senha) {
-        String resultAuth;
-        JSONObject usuarioJson = new JSONObject();
-
-        try {
-            usuarioJson.put("nome", nome);
-            usuarioJson.put("email", email);
-            usuarioJson.put("senha", senha);
-            usuarioJson.put("idOrganizacao", idOrganizacao);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(CadastroUsuario.this, "Erro ao atualizar dados do usuario", Toast.LENGTH_LONG).show();
-        }
-
-        try {
-            String novoUsuarioEncoded = Base64.encodeToString(usuarioJson.toString().getBytes("UTF-8"), Base64.NO_WRAP);
-
-            resultAuth = new CadastroUsuarioService().execute(novoUsuarioEncoded).get();
-
-            if (resultAuth.equals("Servidor nao responde")) {
-                Toast.makeText(this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
-            } else {
-                if (resultAuth.equals("Usuário criado com sucesso")) {
-                    btnCadastroUsuario.setEnabled(false);
-                    Toast.makeText(CadastroUsuario.this, "Cadastro efetuado com sucesso", Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(CadastroUsuario.this, MainActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(CadastroUsuario.this, "Erro ao cadastrar usuario", Toast.LENGTH_LONG).show();
-                }
-            }
-        } catch (Exception e) {
-            Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT);
-            e.printStackTrace();
-        }
-    }
 
     private void configuraSpinner() {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
