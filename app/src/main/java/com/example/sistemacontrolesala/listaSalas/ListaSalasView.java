@@ -1,14 +1,21 @@
 package com.example.sistemacontrolesala.listaSalas;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -85,18 +92,28 @@ public class ListaSalasView extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_suspensoSair) {
-            SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
-            SharedPreferences.Editor editor = pref.edit();
-            editor.remove("userEmail");
-            editor.remove("userName");
-            editor.remove("userId");
-            editor.remove("userNomeOrganizacao");
-            editor.remove("userTipoOrganizacao");
-            editor.remove("userIdOrganizacao");
-            editor.commit();
+                new AlertDialog.Builder(ListaSalasView.this)
+                        .setTitle("Saindo?")
+                        .setMessage("Leva um casaco que tá frio lá fora. Volta logo")
+                        .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.remove("userEmail");
+                                editor.remove("userName");
+                                editor.remove("userId");
+                                editor.remove("userNomeOrganizacao");
+                                editor.remove("userTipoOrganizacao");
+                                editor.remove("userIdOrganizacao");
+                                editor.commit();
 
-            startActivity(new Intent(ListaSalasView.this, MainActivity.class));
-            finish();
+                                startActivity(new Intent(ListaSalasView.this, MainActivity.class));
+                                finish();
+                            }
+                        }).setNegativeButton("NAO", null)
+                        .show();
+
         }
         return super.onOptionsItemSelected(item);
     }

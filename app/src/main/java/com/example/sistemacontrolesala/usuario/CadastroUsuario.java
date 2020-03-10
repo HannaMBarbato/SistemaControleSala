@@ -194,7 +194,9 @@ public class CadastroUsuario extends AppCompatActivity {
         if (resultAuth.equals("Servidor nao responde")) {
             Toast.makeText(this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
         } else {
-            if (resultAuth.equals("Usuário criado com sucesso")) {
+            if(resultAuth.equals("O email informado já está cadastrado")){
+                editEmail.setError("Email informado ja existe");
+            }else if (resultAuth.equals("Usuário criado com sucesso")) {
                 acaoParaCadastroEfetuadoComSucesso();
             } else {
                 Toast.makeText(CadastroUsuario.this, "Erro ao cadastrar usuario", Toast.LENGTH_LONG).show();
