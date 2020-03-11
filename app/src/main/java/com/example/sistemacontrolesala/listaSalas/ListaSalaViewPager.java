@@ -39,56 +39,64 @@ public class ListaSalaViewPager extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-
+        layoutInflater = LayoutInflater.from(context);
         if (position == 0) {
-            layoutInflater = LayoutInflater.from(context);
             View view = layoutInflater.inflate(R.layout.item_salas_cardview_image, container, false);
 
-            // ImageView imageView = view.findViewById(R.id.itemSalaImagem);
-            //imageView.setImageResource(sala.getImagem());
+            inicializaEConfiguraComponente(view, R.id.itemSalaNome, sala.getNome());
+            redirecionaParaOutraActivity(view);
 
-            TextView nome = view.findViewById(R.id.itemSalaNome);
-            nome.setText(sala.getNome());
-
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, AlocacaoSalasView.class);
-                    Bundle parametros = new Bundle();
-                    parametros.putString("idSala", String.valueOf(sala.getId()));
-                    intent.putExtras(parametros);
-
-                    context.startActivity(intent);
-                    ((Activity) context).finish();
-                }
-            });
             container.addView(view, 0);
             return view;
         }
 
         if (position == 1) {
-            layoutInflater = LayoutInflater.from(context);
             View viewInf = layoutInflater.inflate(R.layout.item_sala_cardview_inf, container, false);
 
-            TextView quantidadePessoasSentadas = viewInf.findViewById(R.id.itemSalaQuantidadePessoasSentadas);
-            quantidadePessoasSentadas.setText("quantidade de pessoas: " + sala.getQuantidadePessoasSentadas());
+            inicializaEConfiguraComponente(viewInf, R.id.itemSalaQuantidadePessoasSentadas, "Capacidade de pessoas: " + sala.getQuantidadePessoasSentadas());
+            setTextDeRespostaBoolean(viewInf, R.id.itemSalaPossuiMultimidia, sala.isPossuiMultimidia(), "Possui multimidia: Sim", "Possui multimidia: Nao");
+            setTextDeRespostaBoolean(viewInf, R.id.itemSalaPossuiArcon, sala.isPossuiArcon(), "Possui ar condicionado: Sim", "Possui ar condicionado: Nao");
+            inicializaEConfiguraComponente(viewInf, R.id.itemSalaAreaDaSala, "Area da sala: " + sala.getAreaDaSala());
+            inicializaEConfiguraComponente(viewInf, R.id.itemSalaLocalizacao, "Localizacao: " + sala.getLocalizacao());
 
-            TextView multimidia = viewInf.findViewById(R.id.itemSalaPossuiMultimidia);
-            multimidia.setText("possui multimidia: " + sala.isPossuiMultimidia());
-
-            TextView arCondicionado = viewInf.findViewById(R.id.itemSalaPossuiArcon);
-            arCondicionado.setText("possui ar condicionado: " + sala.isPossuiArcon());
-
-            TextView areaSala = viewInf.findViewById(R.id.itemSalaAreaDaSala);
-            areaSala.setText("area da sala: " + sala.getAreaDaSala());
-
-            TextView localizacao = viewInf.findViewById(R.id.itemSalaLocalizacao);
-            localizacao.setText("localizacao: " + sala.getLocalizacao());
+            redirecionaParaOutraActivity(viewInf);
 
             container.addView(viewInf, 0);
             return viewInf;
         }
         return null;
+    }
+
+    private void redirecionaParaOutraActivity(View view) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, AlocacaoSalasView.class);
+                Bundle parametros = new Bundle();
+                parametros.putString("idSala", String.valueOf(sala.getId()));
+                intent.putExtras(parametros);
+
+                context.startActivity(intent);
+                ((Activity) context).finish();
+            }
+        });
+    }
+
+    private void setTextDeRespostaBoolean(View viewInf, int p, boolean possuiEquipamento, String textoTrue, String textoFalse) {
+        TextView textView = viewInf.findViewById(p);
+        if (possuiEquipamento) {
+            textView.setText(textoTrue);
+        } else {
+            textView.setText(textoFalse);
+        }
+    }
+
+    private void inicializaEConfiguraComponente(View view, int id, String novoTexto) {
+        // ImageView imageView = view.findViewById(R.id.itemSalaImagem);
+        //imageView.setImageResource(sala.getImagem());
+
+        TextView text = view.findViewById(id);
+        text.setText(novoTexto);
     }
 
     @Override

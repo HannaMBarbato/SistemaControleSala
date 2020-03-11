@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class ListaSalasService extends AsyncTask<String, Void, String>{
+public class ListaSalasService extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
@@ -28,9 +28,9 @@ public class ListaSalasService extends AsyncTask<String, Void, String>{
                 result.append(line);
             }
             rd.close();
-            return result.toString();
         } catch (Exception e) {
             e.printStackTrace();
+            return "Servidor nao responde";
         }
         return result.toString();
     }

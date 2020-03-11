@@ -3,21 +3,20 @@ package com.example.sistemacontrolesala.listaSalas;
 public class Sala {
 
     private int id;
-    private int imagem;
     private String nome;
-
-    private int idOrganizacao;
-
     private int quantidadePessoasSentadas;
     private boolean possuiMultimidia;
     private boolean possuiArcon;
     private double areaDaSala;
     private String localizacao;
+
+    /*private int idOrganizacao;
+    private int imagem;
     private double latitude;
     private double longitude;
     private boolean ativo;
     private String dataCriacao;
-    private String dataAlteracao;
+    private String dataAlteracao;*/
 
     public int getId() {
         return id;
@@ -27,13 +26,13 @@ public class Sala {
         this.id = id;
     }
 
-    public int getImagem() {
+   /* public int getImagem() {
         return imagem;
     }
 
     public void setImagem(int imagem) {
         this.imagem = imagem;
-    }
+    }*/
 
     public String getNome() {
         return nome;
@@ -43,13 +42,13 @@ public class Sala {
         this.nome = nome;
     }
 
-    public int getIdOrganizacao() {
+    /*public int getIdOrganizacao() {
         return idOrganizacao;
     }
 
     public void setIdOrganizacao(int idOrganizacao) {
         this.idOrganizacao = idOrganizacao;
-    }
+    }*/
 
     public int getQuantidadePessoasSentadas() {
         return quantidadePessoasSentadas;
@@ -91,7 +90,7 @@ public class Sala {
         this.localizacao = localizacao;
     }
 
-    public double getLatitude() {
+   /* public double getLatitude() {
         return latitude;
     }
 
@@ -129,5 +128,5 @@ public class Sala {
 
     public void setDataAlteracao(String dataAlteracao) {
         this.dataAlteracao = dataAlteracao;
-    }
+    }*/
 }

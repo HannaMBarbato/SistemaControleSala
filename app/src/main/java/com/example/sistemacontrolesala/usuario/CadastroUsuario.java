@@ -64,27 +64,7 @@ public class CadastroUsuario extends AppCompatActivity {
                         if (emailCompleto.length > 1) {
                             String dominio = emailCompleto[1];
                             if (dominio.contains(".")) {
-                                try {
-                                    String listaOrganizacao;
-                                    listaOrganizacao = new IdOrganizacaoParaCadastroUsuarioService().execute(dominio).get();
-                                    if (listaOrganizacao.equals("Servidor nao responde")) {
-                                        Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        JSONArray arrayOrganizacoes = new JSONArray(listaOrganizacao);
-
-                                        listOrganizacao.clear();
-                                        if (arrayOrganizacoes.length() > 0) {
-                                            converteJsonParaAddOrganizacaoNaLista(arrayOrganizacoes);
-                                            listaDeOrganizacoesParaSpinner();
-                                            configuraAdapterDoSpinner();
-                                        } else {
-                                            acaoParaDominioDoEmailErrado();
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                    Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
-                                }
+                                fazRequestParaWebServiceGetIdOrganizacao(dominio);
                             }
                         }
                     }
@@ -94,6 +74,30 @@ public class CadastroUsuario extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void fazRequestParaWebServiceGetIdOrganizacao(String dominio) {
+        try {
+            String listaOrganizacao;
+            listaOrganizacao = new IdOrganizacaoParaCadastroUsuarioService().execute(dominio).get();
+            if (listaOrganizacao.equals("Servidor nao responde")) {
+                Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
+            } else {
+                JSONArray arrayOrganizacoes = new JSONArray(listaOrganizacao);
+
+                listOrganizacao.clear();
+                if (arrayOrganizacoes.length() > 0) {
+                    converteJsonParaAddOrganizacaoNaLista(arrayOrganizacoes);
+                    listaDeOrganizacoesParaSpinner();
+                    configuraAdapterDoSpinner();
+                } else {
+                    acaoParaDominioDoEmailErrado();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(CadastroUsuario.this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void converteJsonParaAddOrganizacaoNaLista(JSONArray arrayOrganizacoes) throws JSONException {
