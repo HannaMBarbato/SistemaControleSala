@@ -29,9 +29,9 @@ public class CadastroAlocacaoService extends AsyncTask<String, Void, String> {
             }
             rd.close();
 
-            return result.toString();
         } catch (Exception e) {
             e.printStackTrace();
+            return "Servidor nao responde";
         }
         return result.toString();
     }

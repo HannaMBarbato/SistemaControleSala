@@ -4,12 +4,13 @@ public class Organizacao {
 
     private int id;
     private String nome;
-    private int idOrganizacaoPai;
     private String tipoOrganizacao;
+
+    /*private int idOrganizacaoPai;
     private String dominio;
     private int ativo;
     private String dataCriacao;
-    private String dataAlteracao;
+    private String dataAlteracao;*/
 
     public int getId() {
         return id;
@@ -27,13 +28,13 @@ public class Organizacao {
         this.nome = nome;
     }
 
-    public int getIdOrganizacaoPai() {
+    /*public int getIdOrganizacaoPai() {
         return idOrganizacaoPai;
     }
 
     public void setIdOrganizacaoPai(int idOrganizacaoPai) {
         this.idOrganizacaoPai = idOrganizacaoPai;
-    }
+    }*/
 
     public String getTipoOrganizacao() {
         return tipoOrganizacao;
@@ -43,7 +44,7 @@ public class Organizacao {
         this.tipoOrganizacao = tipoOrganizacao;
     }
 
-    public String getDominio() {
+   /* public String getDominio() {
         return dominio;
     }
 
@@ -73,5 +74,5 @@ public class Organizacao {
 
     public void setDataAlteracao(String dataAlteracao) {
         this.dataAlteracao = dataAlteracao;
-    }
+    }*/
 }

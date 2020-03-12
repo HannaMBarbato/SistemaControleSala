@@ -45,18 +45,16 @@ public class AlocacaoAdapter extends BaseAdapter {
         ImageView imagem = viewCriada.findViewById(R.id.itemAlocacaoTira);
         imagem.setImageResource(R.color.colorButton);
 
-        TextView organizador = viewCriada.findViewById(R.id.itemAlocacaoNomeOrganizador);
-        organizador.setText(alocacao.getOrganizador());
-
-        TextView descricao = viewCriada.findViewById(R.id.itemAlocacaoDescricao);
-        descricao.setText(alocacao.getDescricao());
-
-        TextView horaInicio = viewCriada.findViewById(R.id.itemAlocacaoHorarioInicio);
-        horaInicio.setText(alocacao.getHoraInicio());
-
-        TextView horaFim = viewCriada.findViewById(R.id.itemAlocacaoHorarioFim);
-        horaFim.setText(alocacao.getHoraFim());
+        textView(viewCriada, R.id.itemAlocacaoNomeOrganizador, alocacao.getOrganizador());
+        textView(viewCriada, R.id.itemAlocacaoDescricao, alocacao.getDescricao());
+        textView(viewCriada, R.id.itemAlocacaoHorarioInicio, alocacao.getHoraInicio());
+        textView(viewCriada, R.id.itemAlocacaoHorarioFim, alocacao.getHoraFim());
 
         return viewCriada;
+    }
+
+    private void textView(View viewCriada, int id, String novoTexto) {
+        TextView textView = viewCriada.findViewById(id);
+        textView.setText(novoTexto);
     }
 }

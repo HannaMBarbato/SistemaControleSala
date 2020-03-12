@@ -32,7 +32,7 @@ public class IdSalaAlocacaoService extends AsyncTask<String, Void, String> {
             return result.toString();
         } catch (Exception e) {
             e.printStackTrace();
-            return e.getMessage();
+            return "Servidor nao responde";
         }
     }
 }

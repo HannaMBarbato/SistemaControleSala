@@ -1,7 +1,9 @@
 package com.example.sistemacontrolesala.alocacao;
 
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,9 +15,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.example.sistemacontrolesala.R;
 
@@ -34,6 +34,9 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
     private TextView txtHoraInicio, txtHoraFim;
     private Context context = this;
     private long dateInicio, dateFim, dateLong;
+    private Button btnSalvar;
+    private int idSalaRecuperado;
+    private String idUsuarioRecuperado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,73 +45,104 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
 
         getPrefNomeOrganizador();
         getDataDaActivityAlocacao(dateLong);
+        inicializaComponentesDaTela();
+        possibilitaClickNosTextHora();
+        configuraBtnSalvar();
+    }
 
-        /*Toolbar toolbar = findViewById(R.id.toolbarActivityAlocacao);
-        setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
-
-        txtHoraInicio = findViewById(R.id.cadastroAlocacaoTxtHoraInicio);
-        txtHoraFim = findViewById(R.id.cadastroAlocacaoTxtHoraFim);
+    private void possibilitaClickNosTextHora() {
         txtHoraInicio.setOnClickListener(this);
         txtHoraFim.setOnClickListener(this);
+    }
 
-        editDescricao = findViewById(R.id.cadastroAlocacaoEditDesc);
-
-        Button btnSalvar = findViewById(R.id.cadastroAlocacaoBtnSalvar);
+    private void configuraBtnSalvar() {
         btnSalvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String resultAuth = "";
                 String descricao = editDescricao.getText().toString();
+                String strHoraInicio = txtHoraInicio.getText().toString();
+                String strHoraFim = txtHoraFim.getText().toString();
 
-                SharedPreferences pref = getSharedPreferences("USER_DATA", 0);
-
-                int idSalaRecuperado = pref.getInt("idSala", 0);
-                System.out.println("ID SALA CADASTRO " + idSalaRecuperado);
-
-                String idUsuarioRecuperado = pref.getString("userId", null);
-                System.out.println("ID USUARIO CADASTRO " + idUsuarioRecuperado);
-
-                JSONObject reservaSalaJson = new JSONObject();
-                try {
-                    reservaSalaJson.put("id_sala", idSalaRecuperado);
-                    reservaSalaJson.put("id_usuario", Integer.parseInt(idUsuarioRecuperado));
-                    reservaSalaJson.put("descricao", descricao);
-                    reservaSalaJson.put("data_hora_inicio", dateInicio);
-                    reservaSalaJson.put("data_hora_fim", dateFim);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Toast.makeText(CadastroAlocacao.this, "Erro ao inserir dados da reserva", Toast.LENGTH_LONG).show();
-                }
-
-                try {
-                    String novaReservaEncode = Base64.encodeToString(reservaSalaJson.toString().getBytes("UTF-8"), Base64.NO_WRAP);
-
-                    resultAuth = new CadastroAlocacaoService().execute(novaReservaEncode).get();
-                    if (resultAuth.equals("Reserva realizada com sucesso")) {
-                        Toast.makeText(CadastroAlocacao.this, "Reserva efetuada com sucesso", Toast.LENGTH_SHORT).show();
-                        finish();
-                    } else {
-                        Toast.makeText(CadastroAlocacao.this, "Erro ao reservar sala", Toast.LENGTH_LONG).show();
-                    }
-                } catch (Exception e) {
-                    Toast.makeText(CadastroAlocacao.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                    e.printStackTrace();
-                }
+                verificaDadosProCadastroDeAlocacao(descricao, strHoraInicio, strHoraFim);
             }
         });
+    }
 
-        Button btnCancelar = findViewById(R.id.cadastroAlocacaoBtnCancelar);
-        btnCancelar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    private void verificaDadosProCadastroDeAlocacao(String descricao, String strHoraInicio, String strHoraFim) {
+        if (descricao.isEmpty()) {
+            editDescricao.setError("Este campo nao pode ficar vazio");
+        } else if (strHoraInicio.isEmpty()) {
+            txtHoraInicio.setError("Este campo nao pode ficar vazio");
+        } else if (strHoraFim.isEmpty()) {
+            txtHoraFim.setError("Este campo nao pode ficar vazio");
+            txtHoraInicio.setError(null);
+        } else if (strHoraInicio.equals(strHoraFim)) {
+            txtHoraFim.setError("Hora de fim igual a de inicio. Digite uma hora valida");
+        } else if (dateInicio > dateFim) {
+            Toast.makeText(CadastroAlocacao.this, "Hora fim tem que ser maior que hora de inicio.", Toast.LENGTH_LONG).show();
+        } else {
+            txtHoraFim.setError(null);
+            getDadosDoSharedPreferences();
+            JSONObject reservaSalaJson = retornaReservaEmJsonObject(descricao, idSalaRecuperado, idUsuarioRecuperado);
+            fazRequestProWebService(reservaSalaJson);
+        }
+    }
+
+    private void fazRequestProWebService(JSONObject reservaSalaJson) {
+        String resultAuth;
+        try {
+            String novaReservaEncode = Base64.encodeToString(reservaSalaJson.toString().getBytes("UTF-8"), Base64.NO_WRAP);
+            resultAuth = new CadastroAlocacaoService().execute(novaReservaEncode).get();
+
+            verificaRespostaDoWebService(resultAuth);
+        } catch (Exception e) {
+            Toast.makeText(CadastroAlocacao.this, "Servidor nao responde", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    private void verificaRespostaDoWebService(String resultAuth) {
+        if (resultAuth.equals("Servidor nao responde")) {
+            Toast.makeText(CadastroAlocacao.this, "Servidor nao responde", Toast.LENGTH_SHORT).show();
+        } else if (resultAuth.equals("A sala já está reservada para o horário selecionado")) {
+            Toast.makeText(CadastroAlocacao.this, "Ja tem reserva para este bloco de hora", Toast.LENGTH_SHORT).show();
+        } else {
+            if (resultAuth.equals("Reserva realizada com sucesso")) {
+                Toast.makeText(CadastroAlocacao.this, "Reserva efetuada com sucesso", Toast.LENGTH_SHORT).show();
                 finish();
+            } else {
+                Toast.makeText(CadastroAlocacao.this, "Erro ao reservar sala", Toast.LENGTH_LONG).show();
             }
-        });
+        }
+    }
 
+    private void getDadosDoSharedPreferences() {
+        pref = getSharedPreferences("USER_DATA", 0);
+        idSalaRecuperado = pref.getInt("idSala", 0);
+        idUsuarioRecuperado = pref.getString("userId", null);
+    }
 
+    private JSONObject retornaReservaEmJsonObject(String descricao, int idSalaRecuperado, String idUsuarioRecuperado) {
+        JSONObject reservaSalaJson = new JSONObject();
+        try {
+            reservaSalaJson.put("id_sala", idSalaRecuperado);
+            reservaSalaJson.put("id_usuario", Integer.parseInt(idUsuarioRecuperado));
+            reservaSalaJson.put("descricao", descricao);
+            reservaSalaJson.put("data_hora_inicio", dateInicio);
+            reservaSalaJson.put("data_hora_fim", dateFim);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(CadastroAlocacao.this, "Erro ao inserir dados da reserva", Toast.LENGTH_LONG).show();
+        }
+        return reservaSalaJson;
+    }
+
+    private void inicializaComponentesDaTela() {
+        txtHoraInicio = findViewById(R.id.cadastroAlocacaoTxtHoraInicio);
+        txtHoraFim = findViewById(R.id.cadastroAlocacaoTxtHoraFim);
+        editDescricao = findViewById(R.id.cadastroAlocacaoEditDesc);
+        btnSalvar = findViewById(R.id.cadastroAlocacaoBtnSalvar);
     }
 
 
@@ -120,22 +154,11 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
         final int hour = calendar.get(Calendar.HOUR_OF_DAY);
         final int minute = calendar.get(Calendar.MINUTE);
 
-        if (view == txtHoraInicio) {
-            TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
-                @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                    getHora(hourOfDay, minute, calendar, formataHora, txtHoraInicio);
-                    dateInicio = calendar.getTime().getTime();
-                    Calendar calendar1 = Calendar.getInstance();
-                    calendar1.setTimeInMillis(dateInicio);
-                    calendar1.add(Calendar.HOUR_OF_DAY, -3);
-                    dateInicio = calendar1.getTimeInMillis();
-                    System.out.println("DATA E HORA INICIO LONG " + dateInicio);
-                }
-            }, hour, minute, android.text.format.DateFormat.is24HourFormat(context));
-            timePickerDialog.show();
-        }
+        timePickerDialogHoraInicio(view, formataHora, calendar, hour, minute);
+        timePickerDialogHoraFim(view, formataHora, calendar, hour, minute);
+    }
 
+    private void timePickerDialogHoraFim(View view, final SimpleDateFormat formataHora, final Calendar calendar, int hour, int minute) {
         if (view == txtHoraFim) {
             TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
                 @Override
@@ -146,7 +169,23 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
                     calendar1.setTimeInMillis(dateFim);
                     calendar1.add(Calendar.HOUR_OF_DAY, -3);
                     dateFim = calendar1.getTimeInMillis();
-                    System.out.println("DATA E HORA FIm LONG " + dateFim);
+                }
+            }, hour, minute, android.text.format.DateFormat.is24HourFormat(this));
+            timePickerDialog.show();
+        }
+    }
+
+    private void timePickerDialogHoraInicio(View view, final SimpleDateFormat formataHora, final Calendar calendar, int hour, int minute) {
+        if (view == txtHoraInicio) {
+            TimePickerDialog timePickerDialog = new TimePickerDialog(context, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    getHora(hourOfDay, minute, calendar, formataHora, txtHoraInicio);
+                    dateInicio = calendar.getTime().getTime();
+                    Calendar calendar1 = Calendar.getInstance();
+                    calendar1.setTimeInMillis(dateInicio);
+                    calendar1.add(Calendar.HOUR_OF_DAY, -3);
+                    dateInicio = calendar1.getTimeInMillis();
                 }
             }, hour, minute, android.text.format.DateFormat.is24HourFormat(this));
             timePickerDialog.show();
@@ -158,6 +197,7 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
         calendar.set(Calendar.MINUTE, minute);
 
         hora.setText(formataHora.format(calendar.getTime()));
+
     }
 
     private Long getDataDaActivityAlocacao(Long dateLong) {
@@ -186,14 +226,17 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
-        //finish();
+        new AlertDialog.Builder(CadastroAlocacao.this)
+                .setIcon(R.drawable.ic_cancel)
+                .setTitle("Cancelar")
+                .setMessage("Deseja cancelar sua reserva?")
+                .setPositiveButton("SIM", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("NAO", null)
+                .show();
     }
-
-  /*  @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        finish();
-        return true;
-    }*/
 }

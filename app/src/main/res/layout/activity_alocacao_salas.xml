@@ -11,6 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/txtNullReservas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Nao tem reservas cadastradas"
+            android:textSize="30dp"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:visibility="gone"/>
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbarActivityAlocacao"
             android:layout_width="match_parent"

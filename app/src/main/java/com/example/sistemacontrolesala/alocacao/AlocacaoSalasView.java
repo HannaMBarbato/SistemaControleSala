@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -45,6 +46,8 @@ public class AlocacaoSalasView extends AppCompatActivity {
     private ToggleButton tbUpDown;
     private Collection<CalendarDay> listaDeDiasComReservas = new ArrayList<>();
 
+    private TextView txtNullReservas;
+
     public AlocacaoSalasView() {
         alocacoesListView = new ArrayList<>();
         listaPorData = new ArrayList<>();
@@ -59,6 +62,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         calendarView = findViewById(R.id.calendarView);
         tbUpDown = findViewById(R.id.toggleButton);
+        txtNullReservas = findViewById(R.id.txtNullReservas);
 
         calendarView.setDateSelected(CalendarDay.today(), true);
 
@@ -88,7 +92,6 @@ public class AlocacaoSalasView extends AppCompatActivity {
             @Override
             public void onDateSelected(@NonNull MaterialCalendarView widget, @NonNull CalendarDay date, boolean selected) {
                 if (selected) {
-                   // calendarView.addDecorator(new DateDecorate(getApplicationContext(), ContextCompat.getColor(getApplicationContext(), R.color.corBranco), calendarView.getSelectedDates()));
                     getAlocacaoPorDia();
                 }
 
@@ -157,6 +160,13 @@ public class AlocacaoSalasView extends AppCompatActivity {
                 return true;
             }
         });
+
+        if(listaPorData.size() == 0){
+            calendarView.addDecorator(new DateDecorate(getApplicationContext(), ContextCompat.getColor(getApplicationContext(), R.color.colorAccent), listaDeDiasComReservas));
+            txtNullReservas.setVisibility(View.VISIBLE);
+        }
+
+
     }
 
     @Override

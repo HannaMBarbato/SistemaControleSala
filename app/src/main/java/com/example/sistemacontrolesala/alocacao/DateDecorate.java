@@ -35,7 +35,6 @@ public class DateDecorate implements DayViewDecorator {
     public void decorate(DayViewFacade view) {
         view.addSpan(new StyleSpan(Typeface.BOLD));
         view.addSpan(new ForegroundColorSpan(color));
-//        view.addSpan(new DotSpan(5, color));
     }
 }
 
