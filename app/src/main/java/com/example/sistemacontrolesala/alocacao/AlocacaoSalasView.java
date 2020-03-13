@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -46,7 +45,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
     private ToggleButton tbUpDown;
     private Collection<CalendarDay> listaDeDiasComReservas = new ArrayList<>();
 
-    private TextView txtNullReservas;
+    String idAlocacaoRecuperado;
 
     public AlocacaoSalasView() {
         alocacoesListView = new ArrayList<>();
@@ -62,7 +61,6 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         calendarView = findViewById(R.id.calendarView);
         tbUpDown = findViewById(R.id.toggleButton);
-        txtNullReservas = findViewById(R.id.txtNullReservas);
 
         calendarView.setDateSelected(CalendarDay.today(), true);
 
@@ -94,7 +92,6 @@ public class AlocacaoSalasView extends AppCompatActivity {
                 if (selected) {
                     getAlocacaoPorDia();
                 }
-
             }
         });
 
@@ -130,7 +127,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 String resultAuth = "";
 
-                                String idAlocacaoRecuperado = "";
+
                                 idAlocacaoRecuperado = String.valueOf(listaPorData.get(position).getId());
                                 int idUsuarioDaReservaEfetuada = listaPorData.get(position).getIdUsuario();
 
@@ -141,9 +138,26 @@ public class AlocacaoSalasView extends AppCompatActivity {
                                     try {
                                         resultAuth = new CancelaAlocacaoService().execute(idAlocacaoRecuperado).get();
                                         if (resultAuth.equals("A reserva foi cancelada com sucesso")) {
-                                            listaPorData.remove(position);
-                                            adapter.notifyDataSetChanged();
-                                            Toast.makeText(AlocacaoSalasView.this, "Reserva excluida com sucesso", Toast.LENGTH_SHORT).show();
+
+                                            int posicaoReservaDelete = -1;
+                                            for (int i = 0; i < alocacoesListView.size(); i++) {
+                                                if (alocacoesListView.get(i).getId() == listaPorData.get(position).getId()) {
+                                                    posicaoReservaDelete = i;
+                                                    break;
+                                                }
+                                            }
+
+                                            if (posicaoReservaDelete != -1) {
+                                                alocacoesListView.remove(posicaoReservaDelete);
+
+                                                listaPorData.remove(position);
+                                                adapter.notifyDataSetChanged();
+                                                Toast.makeText(AlocacaoSalasView.this, "Reserva excluida com sucesso", Toast.LENGTH_SHORT).show();
+
+                                            } else {
+                                                Toast.makeText(AlocacaoSalasView.this, "Erro ao exluir reserva", Toast.LENGTH_SHORT).show();
+                                            }
+
                                         } else {
                                             Toast.makeText(AlocacaoSalasView.this, "Erro ao exluir reserva", Toast.LENGTH_SHORT).show();
                                         }
@@ -160,19 +174,13 @@ public class AlocacaoSalasView extends AppCompatActivity {
                 return true;
             }
         });
-
-        if(listaPorData.size() == 0){
-            calendarView.addDecorator(new DateDecorate(getApplicationContext(), ContextCompat.getColor(getApplicationContext(), R.color.colorAccent), listaDeDiasComReservas));
-            txtNullReservas.setVisibility(View.VISIBLE);
-        }
-
-
     }
 
     @Override
     protected void onResume() {
         getReservas(idSalaString);
         getAlocacaoPorDia();
+
         super.onResume();
     }
 
@@ -195,6 +203,7 @@ public class AlocacaoSalasView extends AppCompatActivity {
 
         adapter = new AlocacaoAdapter(listaPorData, this);
         listAlocacao.setAdapter(adapter);
+
     }
 
     private void getReservas(String idSalaString) {

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sistemacontrolesala.R;
+import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +38,8 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
     private Button btnSalvar;
     private int idSalaRecuperado;
     private String idUsuarioRecuperado;
+
+    private TextInputLayout txtInputHoraInicio, txtInputHoraFim, txtInputDescricao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,18 +73,19 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
 
     private void verificaDadosProCadastroDeAlocacao(String descricao, String strHoraInicio, String strHoraFim) {
         if (descricao.isEmpty()) {
-            editDescricao.setError("Este campo nao pode ficar vazio");
+            txtInputDescricao.setError("Este campo nao pode ficar vazio");
         } else if (strHoraInicio.isEmpty()) {
-            txtHoraInicio.setError("Este campo nao pode ficar vazio");
+            txtInputDescricao.setError(null);
+            txtInputHoraInicio.setError("Campo nao pode ficar vazio");
         } else if (strHoraFim.isEmpty()) {
-            txtHoraFim.setError("Este campo nao pode ficar vazio");
-            txtHoraInicio.setError(null);
+            txtInputHoraInicio.setError(null);
+            txtInputHoraFim.setError("Este campo nao pode ficar vazio");
         } else if (strHoraInicio.equals(strHoraFim)) {
-            txtHoraFim.setError("Hora de fim igual a de inicio. Digite uma hora valida");
+            txtInputHoraFim.setError("Horario de fim igual a de inicio. Digite uma hora valida");
         } else if (dateInicio > dateFim) {
-            Toast.makeText(CadastroAlocacao.this, "Hora fim tem que ser maior que hora de inicio.", Toast.LENGTH_LONG).show();
+            txtInputHoraFim.setError("Horario de fim tem que ser maior que horario de inicio.");
         } else {
-            txtHoraFim.setError(null);
+            txtInputHoraFim.setError(null);
             getDadosDoSharedPreferences();
             JSONObject reservaSalaJson = retornaReservaEmJsonObject(descricao, idSalaRecuperado, idUsuarioRecuperado);
             fazRequestProWebService(reservaSalaJson);
@@ -143,6 +147,10 @@ public class CadastroAlocacao extends AppCompatActivity implements View.OnClickL
         txtHoraFim = findViewById(R.id.cadastroAlocacaoTxtHoraFim);
         editDescricao = findViewById(R.id.cadastroAlocacaoEditDesc);
         btnSalvar = findViewById(R.id.cadastroAlocacaoBtnSalvar);
+
+        txtInputHoraInicio = findViewById(R.id.txtInputHoraInicio);
+        txtInputHoraFim = findViewById(R.id.txtInputHoraFim);
+        txtInputDescricao = findViewById(R.id.txtInputDescricao);
     }
 
 
